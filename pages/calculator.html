@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator jamstava | PROJECT BJ</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <header class="page-header">
+            <div>
+                <h1>Kalkulator jamstava</h1>
+                <p class="text-muted">Izračun dodatnih jamstava za proizvode</p>
+            </div>
+
+            <a href="dashboard.html" class="btn btn-secondary">
+                Natrag
+            </a>
+        </header>
+
+        <main class="calculator-layout">
+
+            <section class="calculator-content">
+
+                <div class="card form-card">
+                    <h2>Dodaj proizvod</h2>
+
+                    <form id="product-form">
+
+                        <div>
+                            <label for="price">Cijena proizvoda</label>
+                            <input id="price" type="text" inputmode="decimal" class="input" placeholder="npr. 299,00">
+                        </div>
+
+                        <div>
+                            <label for="group">Grupa proizvoda</label>
+                            <select id="group" class="select">
+                                <option value="">Odaberi grupu</option>
+                                <option value="A">Grupa A</option>
+                                <option value="B">Grupa B</option>
+                                <option value="mobile">Mobilni uređaji</option>
+                                <option value="bike">Bicikli i romobili</option>
+                                <option value="none">Bez jamstva</option>
+                            </select>
+                        </div>
+
+                        <div id="warranty-wrapper">
+                            <label for="warranty">Tip jamstva</label>
+                            <select id="warranty" class="select">
+                                <option value="">Odaberi jamstvo</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            Dodaj proizvod
+                        </button>
+
+                    </form>
+                </div>
+
+                <div class="card products-card">
+                    <div class="section-header">
+                        <h2>Proizvodi</h2>
+                    </div>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Cijena</th>
+                                <th>Grupa</th>
+                                <th>Jamstvo</th>
+                                <th>Iznos jamstva</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="products-table">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card totals-card">
+                    <h2>Ukupno</h2>
+
+                    <div class="total-row">
+                        <span>Ukupno bez jamstva</span>
+                        <strong id="subtotal">0,00 €</strong>
+                    </div>
+
+                    <div class="total-row">
+                        <span>Ukupno jamstava</span>
+                        <strong id="warranty-total">0,00 €</strong>
+                    </div>
+
+                    <div class="total-row grand-total">
+                        <span>Ukupno s jamstvima</span>
+                        <strong id="grand-total">0,00 €</strong>
+                    </div>
+                </div>
+
+                <div class="card installments-card">
+                    <div class="section-header">
+                        <h2>Izračun rata</h2>
+                        <p class="text-muted">Okvirni izračun mjesečne rate</p>
+                    </div>
+
+                    <div class="installments-control">
+                        <label for="installments">Broj rata</label>
+                        <strong id="installments-value">12</strong>
+                    </div>
+
+                    <input id="installments" type="range" min="2" max="36" value="12">
+
+                    <div class="installments-labels">
+                        <span>2</span>
+                        <span>12</span>
+                        <span>24</span>
+                        <span>36</span>
+                    </div>
+
+                    <div class="total-row">
+                        <span>Rata bez jamstva</span>
+                        <strong id="monthly-subtotal">0,00 €</strong>
+                    </div>
+
+                    <div class="total-row">
+                        <span>Rata jamstava</span>
+                        <strong id="monthly-warranty">0,00 €</strong>
+                    </div>
+
+                    <div class="total-row grand-total">
+                        <span>Rata ukupno</span>
+                        <strong id="monthly-total">0,00 €</strong>
+                    </div>
+                </div>
+
+            </section>
+
+            <aside class="card groups-card">
+                <h2>Grupe proizvoda</h2>
+
+                <div class="group-item">
+                    <h3>Grupa A</h3>
+                    <p>Televizori, igraće konzole, perilice rublja, sušilice rublja, perilice posuđa, bojleri.</p>
+                </div>
+
+                <div class="group-item">
+                    <h3>Grupa B</h3>
+                    <p>Laptopi, stolna računala, monitori, printeri, soundbarovi, hladnjaci, pećnice, klime i slični uređaji.</p>
+                </div>
+
+                <div class="group-item">
+                    <h3>Mobilni uređaji</h3>
+                    <p>Mobiteli, tableti, pametni satovi i pametne narukvice.</p>
+                </div>
+
+                <div class="group-item">
+                    <h3>Bicikli i romobili</h3>
+                    <p>Električni bicikli i električni romobili.</p>
+                </div>
+            </aside>
+
+        </main>
+
+    </div>
+
+    <script src="../js/tools/calculator.js"></script>
+</body>
+</html>

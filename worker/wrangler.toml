@@ -1,0 +1,9 @@
+
+name = "project-bj-api"
+main = "worker.js"
+compatibility_date = "2026-06-05"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "project-bj-db"
+database_id = "55da0710-b98a-4a45-bbfd-c3160d965863"

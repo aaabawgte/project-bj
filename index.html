@@ -1,0 +1,51 @@
+
+
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJECT BJ</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <main class="login-page">
+        <div class="card login-card">
+            <h1>PROJECT BJ</h1>
+            <p class="text-muted">Prijava u sustav</p>
+
+            <form id="login-form">
+                <div>
+                    <label for="username">Korisničko ime</label>
+                    <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        class="input"
+                        autocomplete="username"
+                    >
+                </div>
+
+                <div>
+                    <label for="password">Lozinka</label>
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        class="input"
+                        autocomplete="current-password"
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Prijava
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <script src="js/login.js"></script>
+</body>
+</html>
