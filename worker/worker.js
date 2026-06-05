@@ -100,6 +100,194 @@ export default {
       return json({ success: true });
     }
 
+    if (request.method === "GET" && url.pathname === "/notes") {
+      const user = await getAuthenticatedUser(request, env);
+
+      if (!user) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
+      const notes = await env.DB
+        .prepare(`
+          SELECT id, title, content, updated_at
+          FROM notes
+          WHERE user_id = ?
+          ORDER BY updated_at DESC
+        `)
+        .bind(user.id)
+        .all();
+
+      return json(notes.results || []);
+    }
+
+    if (request.method === "POST" && url.pathname === "/notes") {
+      const user = await getAuthenticatedUser(request, env);
+
+      if (!user) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
+      const body = await request.json();
+      const title = (body.title || "Nova bilješka").trim();
+      const content = body.content || "";
+      const now = new Date().toISOString();
+
+      const result = await env.DB
+        .prepare(`
+          INSERT INTO notes (
+            user_id,
+            title,
+            content,
+            created_at,
+            updated_at
+          )
+          VALUES (?, ?, ?, ?, ?)
+        `)
+        .bind(user.id, title, content, now, now)
+        .run();
+
+      return json({
+        success: true,
+        id: result.meta.last_row_id
+      });
+    }
+
+    if (request.method === "PUT" && url.pathname.startsWith("/notes/")) {
+      const user = await getAuthenticatedUser(request, env);
+
+      if (!user) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
+      const noteId = url.pathname.split("/")[2];
+      const body = await request.json();
+      const title = (body.title || "Nova bilješka").trim();
+      const content = body.content || "";
+      const now = new Date().toISOString();
+
+      await env.DB
+        .prepare(`
+          UPDATE notes
+          SET title = ?, content = ?, updated_at = ?
+          WHERE id = ?
+          AND user_id = ?
+        `)
+        .bind(title, content, now, noteId, user.id)
+        .run();
+
+      return json({ success: true });
+    }
+
+    if (request.method === "DELETE" && url.pathname.startsWith("/notes/")) {
+      const user = await getAuthenticatedUser(request, env);
+
+      if (!user) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
+      const noteId = url.pathname.split("/")[2];
+
+      await env.DB
+        .prepare("DELETE FROM notes WHERE id = ? AND user_id = ?")
+        .bind(noteId, user.id)
+        .run();
+
+      return json({ success: true });
+    }
+
+    if (request.method === "GET" && url.pathname === "/sold-warranties") {
+      const user = await getAuthenticatedUser(request, env);
+
+      if (!user) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
+      const soldWarranties = await env.DB
+        .prepare(`
+          SELECT
+            id,
+            receipt_number,
+            sale_date,
+            product_name,
+            warranty_type,
+            warranty_price,
+            created_at
+          FROM sold_warranties
+          WHERE user_id = ?
+          ORDER BY sale_date DESC, created_at DESC
+        `)
+        .bind(user.id)
+        .all();
+
+      return json(soldWarranties.results || []);
+    }
+
+    if (request.method === "POST" && url.pathname === "/sold-warranties") {
+      const user = await getAuthenticatedUser(request, env);
+
+      if (!user) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
+      const body = await request.json();
+      const receiptNumber = (body.receiptNumber || "").trim();
+      const saleDate = body.saleDate || "";
+      const productName = (body.productName || "").trim();
+      const warrantyType = (body.warrantyType || "").trim();
+      const warrantyPrice = Number(body.warrantyPrice);
+      const now = new Date().toISOString();
+
+      if (!receiptNumber || !saleDate || !productName || !warrantyType || !Number.isFinite(warrantyPrice) || warrantyPrice <= 0) {
+        return json({ error: "Sva polja su obavezna" }, 400);
+      }
+
+      const result = await env.DB
+        .prepare(`
+          INSERT INTO sold_warranties (
+            user_id,
+            receipt_number,
+            sale_date,
+            product_name,
+            warranty_type,
+            warranty_price,
+            created_at
+          )
+          VALUES (?, ?, ?, ?, ?, ?, ?)
+        `)
+        .bind(
+          user.id,
+          receiptNumber,
+          saleDate,
+          productName,
+          warrantyType,
+          warrantyPrice,
+          now
+        )
+        .run();
+
+      return json({
+        success: true,
+        id: result.meta.last_row_id
+      });
+    }
+
+    if (request.method === "DELETE" && url.pathname.startsWith("/sold-warranties/")) {
+      const user = await getAuthenticatedUser(request, env);
+
+      if (!user) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
+      const soldWarrantyId = url.pathname.split("/")[2];
+
+      await env.DB
+        .prepare("DELETE FROM sold_warranties WHERE id = ? AND user_id = ?")
+        .bind(soldWarrantyId, user.id)
+        .run();
+
+      return json({ success: true });
+    }
+
     if (request.method === "GET" && url.pathname === "/tools") {
       const setting = await env.DB
         .prepare("SELECT value FROM settings WHERE key = ?")
@@ -142,7 +330,7 @@ function corsHeaders() {
   return {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS"
   };
 }
 
@@ -158,4 +346,24 @@ async function hashPassword(password) {
 async function verifyPassword(password, passwordHash) {
   const hash = await hashPassword(password);
   return hash === passwordHash;
+}
+
+async function getAuthenticatedUser(request, env) {
+  const auth = request.headers.get("Authorization") || "";
+  const token = auth.replace("Bearer ", "");
+
+  if (!token) {
+    return null;
+  }
+
+  return await env.DB
+    .prepare(`
+      SELECT users.id, users.username
+      FROM sessions
+      JOIN users ON users.id = sessions.user_id
+      WHERE sessions.token = ?
+      AND sessions.expires_at > datetime('now')
+    `)
+    .bind(token)
+    .first();
 }

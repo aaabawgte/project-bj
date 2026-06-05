@@ -1,0 +1,84 @@
+
+
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes | PROJECT BJ</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <header class="page-header">
+            <div>
+                <h1>Notes</h1>
+                <p class="text-muted">Osobne bilješke</p>
+            </div>
+
+            <div class="page-actions">
+                <button id="new-note-btn" class="btn btn-primary" type="button">
+                    + Novi notes
+                </button>
+
+                <a href="dashboard.html" class="btn btn-secondary">
+                    Natrag
+                </a>
+            </div>
+        </header>
+
+        <main class="notes-main">
+            <div id="notes-grid" class="notes-grid">
+            </div>
+
+            <div id="notes-empty" class="card notes-empty">
+                <h2>Nema bilješki</h2>
+                <p class="text-muted">Klikni “+ Novi notes” za prvu bilješku.</p>
+            </div>
+        </main>
+
+        <div id="note-editor" class="note-editor" hidden>
+            <div class="card note-editor-card">
+                <div class="note-editor-header">
+                    <div>
+                        <h2 id="note-editor-heading">Novi notes</h2>
+                        <p class="text-muted">Privatna bilješka</p>
+                    </div>
+
+                    <button id="close-note-editor" class="btn btn-secondary" type="button">
+                        Zatvori
+                    </button>
+                </div>
+
+                <div class="note-editor-body">
+                    <div>
+                        <label for="note-title">Naslov</label>
+                        <input id="note-title" class="input" type="text" placeholder="Naziv bilješke">
+                    </div>
+
+                    <div>
+                        <label for="note-content">Bilješka</label>
+                        <textarea id="note-content" class="note-textarea" placeholder="Upiši bilješku..."></textarea>
+                    </div>
+                </div>
+
+                <div class="note-editor-actions">
+                    <button id="save-note-btn" class="btn btn-primary" type="button">
+                        Spremi
+                    </button>
+
+                    <button id="cancel-note-btn" class="btn btn-secondary" type="button">
+                        Odustani
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="../js/notes.js"></script>
+</body>
+</html>

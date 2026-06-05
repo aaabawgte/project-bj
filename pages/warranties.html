@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prodana jamstva | PROJECT BJ</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <header class="page-header">
+            <div>
+                <h1>Prodana jamstva</h1>
+                <p class="text-muted">Evidencija prodanih jamstava</p>
+            </div>
+
+            <div class="page-actions">
+                <button id="new-warranty-btn" class="btn btn-primary" type="button">
+                    + Novo jamstvo
+                </button>
+
+                <a href="dashboard.html" class="btn btn-secondary">
+                    Natrag
+                </a>
+            </div>
+        </header>
+
+        <main class="warranties-main">
+
+            <div class="card warranties-summary">
+                <div>
+                    <span class="text-muted">Broj jamstava</span>
+                    <strong id="warranty-count">0</strong>
+                </div>
+
+                <div>
+                    <span class="text-muted">Ukupno</span>
+                    <strong id="warranty-total">0,00 €</strong>
+                </div>
+            </div>
+
+            <div id="warranties-list" class="warranties-list">
+            </div>
+
+            <div id="warranties-empty" class="card notes-empty">
+                <h2>Nema prodanih jamstava</h2>
+                <p class="text-muted">Klikni “+ Novo jamstvo” za prvi unos.</p>
+            </div>
+
+        </main>
+
+        <div id="warranty-editor" class="note-editor" hidden>
+            <div class="card note-editor-card">
+
+                <div class="note-editor-header">
+                    <div>
+                        <h2>Novo jamstvo</h2>
+                        <p class="text-muted">Unesi podatke o prodanom jamstvu</p>
+                    </div>
+
+                    <button id="close-warranty-editor" class="btn btn-secondary" type="button">
+                        Zatvori
+                    </button>
+                </div>
+
+                <div class="warranty-form-grid">
+                    <div>
+                        <label for="receipt-number">Broj računa</label>
+                        <input id="receipt-number" class="input" type="text" placeholder="npr. R-12345">
+                    </div>
+
+                    <div>
+                        <label for="sale-date">Datum prodaje</label>
+                        <input id="sale-date" class="input" type="date">
+                    </div>
+
+                    <div>
+                        <label for="product-name">Proizvod</label>
+                        <input id="product-name" class="input" type="text" placeholder="npr. Laptop HP">
+                    </div>
+
+                    <div>
+                        <label for="warranty-type">Tip jamstva</label>
+                        <select id="warranty-type" class="select">
+                            <option value="">Odaberi tip jamstva</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="warranty-price-input">Cijena jamstva</label>
+                        <input id="warranty-price-input" class="input" type="text" inputmode="decimal" placeholder="npr. 89,99">
+                    </div>
+                </div>
+
+                <div class="note-editor-actions">
+                    <button id="save-warranty-btn" class="btn btn-primary" type="button">
+                        Spremi
+                    </button>
+
+                    <button id="cancel-warranty-btn" class="btn btn-secondary" type="button">
+                        Odustani
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="../js/warranties.js"></script>
+</body>
+</html>

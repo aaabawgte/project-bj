@@ -52,6 +52,15 @@ const monthlySubtotalEl = document.querySelector("#monthly-subtotal");
 const monthlyWarrantyEl = document.querySelector("#monthly-warranty");
 const monthlyTotalEl = document.querySelector("#monthly-total");
 
+const customerViewButton = document.querySelector("#customer-view-btn");
+const customerView = document.querySelector("#customer-view");
+const closeCustomerViewButton = document.querySelector("#close-customer-view");
+const customerInstallmentsEl = document.querySelector("#customer-installments");
+const customerTotalEl = document.querySelector("#customer-total");
+const customerMonthlySubtotalEl = document.querySelector("#customer-monthly-subtotal");
+const customerMonthlyTotalEl = document.querySelector("#customer-monthly-total");
+const customerMonthlyDifferenceEl = document.querySelector("#customer-monthly-difference");
+
 let products = [];
 
 if (!token) {
@@ -64,6 +73,10 @@ if (!token) {
 
 form?.addEventListener("submit", addProduct);
 groupSelect?.addEventListener("change", updateWarrantyOptions);
+installmentsInput?.addEventListener("input", renderTotals);
+customerViewButton?.addEventListener("click", openCustomerView);
+closeCustomerViewButton?.addEventListener("click", closeCustomerView);
+
 priceInput?.addEventListener("blur", () => {
   const price = parsePrice(priceInput.value);
 
@@ -80,7 +93,6 @@ productsTable?.addEventListener("click", (event) => {
   products = products.filter(product => product.id !== button.dataset.id);
   renderProducts();
 });
-installmentsInput?.addEventListener("input", renderTotals);
 
 async function checkSession() {
   try {
@@ -196,19 +208,54 @@ function renderProducts() {
 }
 
 function renderTotals() {
+  const totals = getTotals();
+
+  subtotalEl.textContent = formatEuro(totals.subtotal);
+  warrantyTotalEl.textContent = formatEuro(totals.warrantyTotal);
+  grandTotalEl.textContent = formatEuro(totals.total);
+
+  installmentsValueEl.textContent = totals.installments;
+  monthlySubtotalEl.textContent = formatEuro(totals.monthlySubtotal);
+  monthlyWarrantyEl.textContent = formatEuro(totals.monthlyDifference);
+  monthlyTotalEl.textContent = formatEuro(totals.monthlyTotal);
+}
+
+function openCustomerView() {
+  if (!products.length) {
+    alert("Prvo dodaj barem jedan proizvod.");
+    return;
+  }
+
+  const totals = getTotals();
+
+  customerInstallmentsEl.textContent = `${totals.installments} rata`;
+  customerTotalEl.textContent = formatEuro(totals.total);
+  customerMonthlySubtotalEl.textContent = formatEuro(totals.monthlySubtotal);
+  customerMonthlyTotalEl.textContent = formatEuro(totals.monthlyTotal);
+  customerMonthlyDifferenceEl.textContent = formatEuro(totals.monthlyDifference);
+
+  customerView.hidden = false;
+}
+
+function closeCustomerView() {
+  customerView.hidden = true;
+}
+
+function getTotals() {
   const subtotal = products.reduce((sum, product) => sum + product.price, 0);
   const warrantyTotal = products.reduce((sum, product) => sum + product.warrantyAmount, 0);
   const total = subtotal + warrantyTotal;
   const installments = Number(installmentsInput?.value || 12);
 
-  subtotalEl.textContent = formatEuro(subtotal);
-  warrantyTotalEl.textContent = formatEuro(warrantyTotal);
-  grandTotalEl.textContent = formatEuro(total);
-
-  installmentsValueEl.textContent = installments;
-  monthlySubtotalEl.textContent = formatEuro(subtotal / installments);
-  monthlyWarrantyEl.textContent = formatEuro(warrantyTotal / installments);
-  monthlyTotalEl.textContent = formatEuro(total / installments);
+  return {
+    subtotal,
+    warrantyTotal,
+    total,
+    installments,
+    monthlySubtotal: subtotal / installments,
+    monthlyTotal: total / installments,
+    monthlyDifference: warrantyTotal / installments
+  };
 }
 
 function parsePrice(value) {

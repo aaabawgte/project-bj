@@ -136,6 +136,10 @@
                         <span>Rata ukupno</span>
                         <strong id="monthly-total">0,00 €</strong>
                     </div>
+
+                    <button type="button" id="customer-view-btn" class="btn btn-primary">
+                        Prikaz za kupca
+                    </button>
                 </div>
 
             </section>
@@ -163,6 +167,40 @@
                     <p>Električni bicikli i električni romobili.</p>
                 </div>
             </aside>
+
+            <div id="customer-view" class="customer-view" hidden>
+                <div class="customer-view-content">
+
+                    <div class="customer-installments" id="customer-installments">
+                        12 rata
+                    </div>
+
+                    <div class="customer-block">
+                        <span>Ukupna cijena</span>
+                        <strong id="customer-total">0,00 €</strong>
+                    </div>
+
+                    <div class="customer-block">
+                        <span>Rata bez jamstva</span>
+                        <strong id="customer-monthly-subtotal">0,00 €</strong>
+                    </div>
+
+                    <div class="customer-block">
+                        <span>Rata s jamstvom</span>
+                        <strong id="customer-monthly-total">0,00 €</strong>
+                    </div>
+
+                    <div class="customer-block customer-highlight">
+                        <span>Razlika u rati</span>
+                        <strong id="customer-monthly-difference">0,00 €</strong>
+                    </div>
+
+                    <button type="button" id="close-customer-view" class="btn btn-secondary">
+                        Zatvori prikaz
+                    </button>
+
+                </div>
+            </div>
 
         </main>
 
