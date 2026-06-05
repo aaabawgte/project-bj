@@ -236,12 +236,13 @@ label {
 
 .tool-card {
   width: 170px;
-  min-height: 150px;
+  height: 150px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   transition: transform .15s, box-shadow .15s;
+  overflow: hidden;
 }
 
 .tool-card:hover {
@@ -251,6 +252,18 @@ label {
 
 .tool-card h2 {
   margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.2;
+  min-height: 2.4em;
+}
+
+.tool-card p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .tool-icon {
