@@ -1,0 +1,43 @@
+
+
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registracija | PROJECT BJ</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="auth-page">
+        <div class="card auth-card">
+            <h1>Registracija</h1>
+            <p class="text-muted">Pošalji zahtjev za pristup sustavu.</p>
+
+            <form id="register-form">
+                <div class="field">
+                    <label for="username">Korisničko ime</label>
+                    <input id="username" type="text" required>
+                </div>
+
+                <div class="field">
+                    <label for="password">Lozinka</label>
+                    <input id="password" type="password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Pošalji zahtjev
+                </button>
+            </form>
+
+            <div id="register-message" class="text-muted"></div>
+
+            <a href="../index.html" class="btn btn-secondary">
+                Natrag na prijavu
+            </a>
+        </div>
+    </div>
+
+    <script src="../js/register.js"></script>
+</body>
+</html>

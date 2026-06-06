@@ -135,13 +135,20 @@ label {
 }
 
 .btn-primary {
-  width: 100%;
   background: var(--accent);
   color: #fff;
 }
 
 .btn-primary:hover {
   background: var(--accent-hover);
+}
+
+.login-card .btn-primary,
+.auth-card .btn-primary,
+#product-form .btn-primary,
+.announcement-form .btn-primary,
+#close-customer-view {
+  width: 100%;
 }
 
 .btn-secondary {
@@ -223,10 +230,185 @@ label {
   margin-top: 32px;
 }
 
+.dashboard-layout {
+  min-height: calc(100vh - 48px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 24px;
+  align-items: start;
+}
+
+.dashboard-content {
+  min-width: 0;
+}
+
+.dashboard-sidebar {
+  position: sticky;
+  top: 24px;
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.dashboard-admin-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.dashboard-admin-row .btn {
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
 .dashboard-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
+}
+
+.dashboard-user-area {
+  display: grid;
+  grid-template-columns: 1fr 92px;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.dashboard-user-card {
+  min-width: 0;
+  height: 46px;
+  padding: 0 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  box-shadow: var(--shadow);
+}
+
+.dashboard-user-area .btn {
+  min-width: 0;
+  height: 46px;
+  min-height: 46px;
+  padding: 0 12px;
+}
+
+.dashboard-user-label {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
+
+.dashboard-user-name {
+  margin-top: 2px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.announcements-card {
+  max-height: 500px;
+  padding: 16px;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.announcements-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.announcements-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.announcements-header p {
+  margin-top: 2px;
+  font-size: 14px;
+}
+
+.announcements-list {
+  min-height: 120px;
+  max-height: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.announcement-item {
+  padding: 10px 12px;
+  background: var(--input);
+  border: 1px solid var(--border-light);
+  border-radius: 13px;
+  text-align: left;
+}
+
+.announcement-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 2px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.announcement-content {
+  margin-top: 0;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.35;
+  white-space: pre-line;
+  text-align: left;
+}
+
+.announcement-delete {
+  margin-top: 8px;
+  min-height: 30px;
+  padding: 0 10px;
+  color: var(--danger);
+  background: var(--danger-bg);
+  border: 1px solid #ffc9c6;
+  font-size: 12px;
+}
+
+.announcement-form {
+  padding-top: 12px;
+  border-top: 1px solid var(--border-light);
+}
+
+.announcement-form textarea {
+  width: 100%;
+  min-height: 72px;
+  resize: vertical;
+  padding: 12px;
+  background: var(--input);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  outline: 0;
+  font: inherit;
+}
+
+.announcement-form textarea:focus {
+  background: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, .12);
+}
+
+.announcement-form .btn {
+  margin-top: 10px;
 }
 
 .tool-link {
@@ -487,6 +669,35 @@ label {
   gap: 18px;
 }
 
+.calculator-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 20px;
+}
+
+.calculator-content {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+
+.form-card,
+.products-card,
+.totals-card,
+.installments-card,
+.groups-card {
+  padding: 24px;
+}
+
+.form-card .input,
+.form-card .select,
+.totals-card,
+.installments-card,
+.groups-card,
+.products-card {
+  max-width: 100%;
+}
+
 .stats-page {
   margin-top: 24px;
   display: grid;
@@ -597,11 +808,12 @@ label {
 .totals-card,
 .installments-card {
   display: grid;
-  gap: 14px;
+  gap: 16px;
 }
 
 #product-form {
   margin-top: 20px;
+  max-width: 760px;
 }
 
 .section-header {
@@ -781,9 +993,26 @@ label {
   .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-sidebar {
+    position: static;
+    height: auto;
+  }
+
+  .announcements-card {
+    max-height: none;
+    min-height: 320px;
+  }
 }
 
 @media (max-width: 560px) {
+  .calculator-layout {
+    grid-template-columns: 1fr;
+  }
   body {
     font-size: 14px;
   }
@@ -796,6 +1025,15 @@ label {
   .flex-between {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .dashboard-user-area {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-user-card {
+    width: 100%;
   }
 
   .page-header .btn,
@@ -905,6 +1143,18 @@ label {
 
   .customer-slider-section {
     padding: 14px;
+  }
+
+  .dashboard-admin-row {
+    justify-content: stretch;
+  }
+
+  .dashboard-admin-row .btn {
+    width: 100%;
+  }
+
+  .announcements-card {
+    min-height: 300px;
   }
 }
 
@@ -1115,4 +1365,119 @@ label {
   flex: 0 0 10px;
   border-radius: 50%;
   background: var(--dot-color);
+}
+
+/* ADMIN PANEL */
+.admin-user-row {
+  padding: 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.admin-user-row:last-child {
+  border-bottom: 0;
+}
+
+.admin-user-row > div:first-child {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.admin-user-row strong {
+  font-size: 15px;
+}
+
+.admin-user-row span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.admin-user-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.admin-user-actions .btn {
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px;
+}
+
+.auth-card form {
+  display: grid;
+  gap: 18px;
+  margin: 28px 0 16px;
+}
+
+.field input {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  background: var(--input);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  outline: 0;
+}
+
+.field input:focus {
+  background: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, .12);
+}
+
+.auth-link {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.auth-link a {
+  color: var(--accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+#register-message {
+  min-height: 22px;
+  margin: 10px 0 14px;
+  font-size: 14px;
+}
+
+@media (max-width: 560px) {
+  .admin-user-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-user-actions {
+    justify-content: stretch;
+  }
+
+  .admin-user-actions .btn {
+    flex: 1;
+  }
+
+  .auth-card {
+    padding: 24px;
+  }
 }

@@ -31,6 +31,18 @@ export default {
         }, 401);
       }
 
+      if (user.status === "pending") {
+        return json({
+          error: "Račun čeka odobrenje administratora"
+        }, 403);
+      }
+
+      if (user.status !== "active") {
+        return json({
+          error: "Račun nije aktivan"
+        }, 403);
+      }
+
       const validPassword = await verifyPassword(
         password,
         user.password_hash
@@ -53,7 +65,53 @@ export default {
       return json({
         success: true,
         token,
-        username: user.username
+        username: user.username,
+        role: user.role,
+        status: user.status
+      });
+    }
+
+    if (request.method === "POST" && url.pathname === "/register") {
+      const body = await request.json();
+      const username = (body.username || "").trim();
+      const password = body.password || "";
+
+      if (!username || !password) {
+        return json({ error: "Username i lozinka su obavezni" }, 400);
+      }
+
+      if (username.length < 3 || password.length < 6) {
+        return json({ error: "Username mora imati barem 3 znaka, a lozinka barem 6" }, 400);
+      }
+
+      const existingUser = await env.DB
+        .prepare("SELECT id FROM users WHERE username = ?")
+        .bind(username)
+        .first();
+
+      if (existingUser) {
+        return json({ error: "Korisnik već postoji" }, 409);
+      }
+
+      const passwordHash = await hashPassword(password);
+
+      await env.DB
+        .prepare(`
+          INSERT INTO users (
+            username,
+            password_hash,
+            created_at,
+            role,
+            status
+          )
+          VALUES (?, ?, datetime('now'), 'user', 'pending')
+        `)
+        .bind(username, passwordHash)
+        .run();
+
+      return json({
+        success: true,
+        message: "Registracija je poslana na odobrenje"
       });
     }
 
@@ -67,7 +125,7 @@ export default {
 
       const session = await env.DB
         .prepare(
-          `SELECT users.username
+          `SELECT users.username, users.role, users.status
            FROM sessions
            JOIN users ON users.id = sessions.user_id
            WHERE sessions.token = ?
@@ -82,7 +140,9 @@ export default {
 
       return json({
         authenticated: true,
-        username: session.username
+        username: session.username,
+        role: session.role,
+        status: session.status
       });
     }
 
@@ -96,6 +156,102 @@ export default {
           .bind(token)
           .run();
       }
+
+      return json({ success: true });
+    }
+
+    if (request.method === "GET" && url.pathname === "/admin/users") {
+      const admin = await getAdminUser(request, env);
+
+      if (!admin) {
+        return json({ error: "Forbidden" }, 403);
+      }
+
+      const users = await env.DB
+        .prepare(`
+          SELECT id, username, role, status, created_at
+          FROM users
+          ORDER BY created_at DESC
+        `)
+        .all();
+
+      return json(users.results || []);
+    }
+
+    if (request.method === "PUT" && url.pathname.startsWith("/admin/users/")) {
+      const admin = await getAdminUser(request, env);
+
+      if (!admin) {
+        return json({ error: "Forbidden" }, 403);
+      }
+
+      const userId = url.pathname.split("/")[3];
+      const body = await request.json();
+      const username = (body.username || "").trim();
+      const role = body.role === "admin" ? "admin" : "user";
+      const status = body.status === "active" ? "active" : "pending";
+
+      if (!username) {
+        return json({ error: "Username je obavezan" }, 400);
+      }
+
+      if (body.password) {
+        const passwordHash = await hashPassword(body.password);
+
+        await env.DB
+          .prepare(`
+            UPDATE users
+            SET username = ?, role = ?, status = ?, password_hash = ?
+            WHERE id = ?
+          `)
+          .bind(username, role, status, passwordHash, userId)
+          .run();
+      } else {
+        await env.DB
+          .prepare(`
+            UPDATE users
+            SET username = ?, role = ?, status = ?
+            WHERE id = ?
+          `)
+          .bind(username, role, status, userId)
+          .run();
+      }
+
+      return json({ success: true });
+    }
+
+    if (request.method === "DELETE" && url.pathname.startsWith("/admin/users/")) {
+      const admin = await getAdminUser(request, env);
+
+      if (!admin) {
+        return json({ error: "Forbidden" }, 403);
+      }
+
+      const userId = url.pathname.split("/")[3];
+
+      if (String(admin.id) === String(userId)) {
+        return json({ error: "Ne možeš obrisati sam sebe" }, 400);
+      }
+
+      await env.DB
+        .prepare("DELETE FROM sessions WHERE user_id = ?")
+        .bind(userId)
+        .run();
+
+      await env.DB
+        .prepare("DELETE FROM notes WHERE user_id = ?")
+        .bind(userId)
+        .run();
+
+      await env.DB
+        .prepare("DELETE FROM sold_warranties WHERE user_id = ?")
+        .bind(userId)
+        .run();
+
+      await env.DB
+        .prepare("DELETE FROM users WHERE id = ?")
+        .bind(userId)
+        .run();
 
       return json({ success: true });
     }
@@ -375,6 +531,80 @@ export default {
       });
     }
 
+    if (request.method === "GET" && url.pathname === "/announcements") {
+      const user = await getAuthenticatedUser(request, env);
+
+      if (!user) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
+      const announcements = await env.DB
+        .prepare(`
+          SELECT
+            announcements.id,
+            announcements.content,
+            announcements.created_at,
+            users.username
+          FROM announcements
+          JOIN users ON users.id = announcements.user_id
+          ORDER BY announcements.created_at DESC
+          LIMIT 50
+        `)
+        .all();
+
+      return json(announcements.results || []);
+    }
+
+    if (request.method === "POST" && url.pathname === "/announcements") {
+      const admin = await getAdminUser(request, env);
+
+      if (!admin) {
+        return json({ error: "Forbidden" }, 403);
+      }
+
+      const body = await request.json();
+      const content = (body.content || "").trim();
+      const now = new Date().toISOString();
+
+      if (!content) {
+        return json({ error: "Obavijest ne može biti prazna" }, 400);
+      }
+
+      const result = await env.DB
+        .prepare(`
+          INSERT INTO announcements (
+            user_id,
+            content,
+            created_at
+          )
+          VALUES (?, ?, ?)
+        `)
+        .bind(admin.id, content, now)
+        .run();
+
+      return json({
+        success: true,
+        id: result.meta.last_row_id
+      });
+    }
+
+    if (request.method === "DELETE" && url.pathname.startsWith("/announcements/")) {
+      const admin = await getAdminUser(request, env);
+
+      if (!admin) {
+        return json({ error: "Forbidden" }, 403);
+      }
+
+      const announcementId = url.pathname.split("/")[2];
+
+      await env.DB
+        .prepare("DELETE FROM announcements WHERE id = ?")
+        .bind(announcementId)
+        .run();
+
+      return json({ success: true });
+    }
+
     if (request.method === "GET" && url.pathname === "/tools") {
       const setting = await env.DB
         .prepare("SELECT value FROM settings WHERE key = ?")
@@ -445,7 +675,7 @@ async function getAuthenticatedUser(request, env) {
 
   return await env.DB
     .prepare(`
-      SELECT users.id, users.username
+      SELECT users.id, users.username, users.role, users.status
       FROM sessions
       JOIN users ON users.id = sessions.user_id
       WHERE sessions.token = ?
@@ -453,4 +683,14 @@ async function getAuthenticatedUser(request, env) {
     `)
     .bind(token)
     .first();
+}
+
+async function getAdminUser(request, env) {
+  const user = await getAuthenticatedUser(request, env);
+
+  if (!user || user.role !== "admin" || user.status !== "active") {
+    return null;
+  }
+
+  return user;
 }

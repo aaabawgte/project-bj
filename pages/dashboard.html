@@ -11,56 +11,101 @@
 
     <div class="container">
 
-        <header class="flex-between">
-            <div>
-                <h1>PROJECT BJ</h1>
-                <p class="text-muted">Odaberite alat</p>
-            </div>
+        <div class="dashboard-layout">
 
-            <button id="logout-btn" class="btn btn-secondary">
-                Odjava
-            </button>
-        </header>
-
-        <main class="dashboard-main">
-
-            <div class="dashboard-grid">
-
-                <a href="calculator.html" class="tool-link">
-                    <div class="card tool-card">
-                        <div class="tool-icon">🛡️</div>
-                        <h2>Jamstva</h2>
-                        <p class="text-muted">Kalkulator</p>
+            <section class="dashboard-content">
+                <header class="flex-between">
+                    <div>
+                        <h1>PROJECT BJ</h1>
+                        <p class="text-muted">Odaberite alat</p>
                     </div>
-                </a>
+                </header>
 
-                <a href="notes.html" class="tool-link">
-                    <div class="card tool-card">
-                        <div class="tool-icon">📝</div>
-                        <h2>Notes</h2>
-                        <p class="text-muted">Bilješke</p>
+                <main class="dashboard-main">
+
+                    <div class="dashboard-admin-row">
+                        <a href="admin.html" id="admin-tile" class="btn btn-secondary">
+                            ⚙️ Admin
+                        </a>
                     </div>
-                </a>
 
-                <a href="warranties.html" class="tool-link">
-                    <div class="card tool-card">
-                        <div class="tool-icon">📋</div>
-                        <h2>Prodana jamstva</h2>
-                        <p class="text-muted">Evidencija</p>
+                    <div class="dashboard-grid">
+
+                        <a href="calculator.html" class="tool-link">
+                            <div class="card tool-card">
+                                <div class="tool-icon">🛡️</div>
+                                <h2>Jamstva</h2>
+                                <p class="text-muted">Kalkulator</p>
+                            </div>
+                        </a>
+
+                        <a href="notes.html" class="tool-link">
+                            <div class="card tool-card">
+                                <div class="tool-icon">📝</div>
+                                <h2>Notes</h2>
+                                <p class="text-muted">Bilješke</p>
+                            </div>
+                        </a>
+
+                        <a href="warranties.html" class="tool-link">
+                            <div class="card tool-card">
+                                <div class="tool-icon">📋</div>
+                                <h2>Prodana jamstva</h2>
+                                <p class="text-muted">Evidencija</p>
+                            </div>
+                        </a>
+
+                        <a href="warranty-stats.html" class="tool-link">
+                            <div class="card tool-card">
+                                <div class="tool-icon">📊</div>
+                                <h2>Statistika jamstava</h2>
+                                <p class="text-muted">Pregled</p>
+                            </div>
+                        </a>
+
                     </div>
-                </a>
 
-                <a href="warranty-stats.html" class="tool-link">
-                    <div class="card tool-card">
-                        <div class="tool-icon">📊</div>
-                        <h2>Statistika jamstava</h2>
-                        <p class="text-muted">Pregled</p>
+                </main>
+            </section>
+
+            <aside class="dashboard-sidebar">
+                <div class="dashboard-user-area">
+                    <div class="dashboard-user-card">
+                        <div class="dashboard-user-label">Prijavljen korisnik</div>
+                        <div id="current-user" class="dashboard-user-name">
+                            Učitavanje...
+                        </div>
                     </div>
-                </a>
 
-            </div>
+                    <button id="logout-btn" class="btn btn-secondary">
+                        Odjava
+                    </button>
+                </div>
 
-        </main>
+                <section class="card announcements-card">
+                    <div class="announcements-header">
+                        <div>
+                            <h2>Obavijesti</h2>
+                            <p class="text-muted">Zadnje objave</p>
+                        </div>
+                    </div>
+
+                    <div id="announcements-list" class="announcements-list">
+                        <p class="text-muted">Učitavanje obavijesti...</p>
+                    </div>
+
+                    <form id="announcement-form" class="announcement-form" hidden>
+                        <label for="announcement-content">Nova obavijest</label>
+                        <textarea id="announcement-content" placeholder="Upiši obavijest..."></textarea>
+
+                        <button type="submit" class="btn btn-primary">
+                            Objavi
+                        </button>
+                    </form>
+                </section>
+            </aside>
+
+        </div>
 
     </div>
 
