@@ -1,0 +1,84 @@
+
+
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistika jamstava | PROJECT BJ</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <header class="page-header">
+            <div>
+                <h1>Statistika jamstava</h1>
+                <p class="text-muted">Pregled svih prodanih jamstava</p>
+            </div>
+
+            <div class="page-actions">
+                <a href="dashboard.html" class="btn btn-secondary">
+                    Natrag
+                </a>
+            </div>
+        </header>
+
+        <main class="stats-page">
+
+            <div class="stats-grid" id="stats-grid">
+                <div class="card stat-tile">
+                    <span>Ukupno prodano</span>
+                    <strong id="total-sold">0</strong>
+                </div>
+
+                <div class="card stat-tile">
+                    <span>Ukupan promet</span>
+                    <strong id="total-revenue">0 €</strong>
+                </div>
+
+                <div class="card stat-tile">
+                    <span>Prosječna cijena</span>
+                    <strong id="average-price">0 €</strong>
+                </div>
+
+                <div class="card stat-tile">
+                    <span>Prodano danas</span>
+                    <strong id="today-sold">0</strong>
+                </div>
+
+                <div class="card stat-tile">
+                    <span>Najprodavanije</span>
+                    <strong id="top-warranty">-</strong>
+                </div>
+
+                <div class="card stat-tile">
+                    <span>Najveći iznos</span>
+                    <strong id="highest-warranty">0 €</strong>
+                </div>
+            </div>
+
+            <div class="card stats-section">
+                <h2>Prodaja po tipu jamstva</h2>
+                <div id="warranty-type-chart"></div>
+                <div id="by-type-list"></div>
+            </div>
+
+            <div class="card stats-section">
+                <h2>Prodaja po korisniku</h2>
+                <div id="by-user-list"></div>
+            </div>
+
+            <div class="card stats-section">
+                <h2>Zadnjih 30 dana</h2>
+                <div id="by-day-list"></div>
+            </div>
+
+        </main>
+
+    </div>
+
+    <script src="../js/warranty-stats.js"></script>
+</body>
+</html>

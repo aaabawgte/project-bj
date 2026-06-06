@@ -288,6 +288,93 @@ export default {
       return json({ success: true });
     }
 
+    if (request.method === "GET" && url.pathname === "/warranty-stats") {
+      const user = await getAuthenticatedUser(request, env);
+
+      if (!user) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
+      const summary = await env.DB
+        .prepare(`
+          SELECT
+            COUNT(*) as totalSold,
+            COALESCE(SUM(warranty_price),0) as totalRevenue,
+            COALESCE(AVG(warranty_price),0) as averagePrice,
+            COALESCE(MAX(warranty_price),0) as highestWarranty
+          FROM sold_warranties
+        `)
+        .first();
+
+      const topWarranty = await env.DB
+        .prepare(`
+          SELECT warranty_type, COUNT(*) as count
+          FROM sold_warranties
+          GROUP BY warranty_type
+          ORDER BY count DESC
+          LIMIT 1
+        `)
+        .first();
+
+      const todaySold = await env.DB
+        .prepare(`
+          SELECT COUNT(*) as count
+          FROM sold_warranties
+          WHERE sale_date = date('now')
+        `)
+        .first();
+
+      const byType = await env.DB
+        .prepare(`
+          SELECT
+            warranty_type,
+            COUNT(*) as count,
+            SUM(warranty_price) as revenue
+          FROM sold_warranties
+          GROUP BY warranty_type
+          ORDER BY count DESC
+        `)
+        .all();
+
+      const byDay = await env.DB
+        .prepare(`
+          SELECT
+            sale_date,
+            COUNT(*) as count,
+            SUM(warranty_price) as revenue
+          FROM sold_warranties
+          GROUP BY sale_date
+          ORDER BY sale_date DESC
+          LIMIT 30
+        `)
+        .all();
+
+      const byUser = await env.DB
+        .prepare(`
+          SELECT
+            users.username,
+            COUNT(*) as count,
+            SUM(sold_warranties.warranty_price) as revenue
+          FROM sold_warranties
+          JOIN users ON users.id = sold_warranties.user_id
+          GROUP BY users.username
+          ORDER BY count DESC
+        `)
+        .all();
+
+      return json({
+        totalSold: Number(summary?.totalSold || 0),
+        totalRevenue: Number(summary?.totalRevenue || 0),
+        averagePrice: Number(summary?.averagePrice || 0),
+        highestWarranty: Number(summary?.highestWarranty || 0),
+        todaySold: Number(todaySold?.count || 0),
+        topWarranty: topWarranty?.warranty_type || "-",
+        byType: byType.results || [],
+        byDay: byDay.results || [],
+        byUser: byUser.results || []
+      });
+    }
+
     if (request.method === "GET" && url.pathname === "/tools") {
       const setting = await env.DB
         .prepare("SELECT value FROM settings WHERE key = ?")

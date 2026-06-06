@@ -60,6 +60,8 @@ const customerTotalEl = document.querySelector("#customer-total");
 const customerMonthlySubtotalEl = document.querySelector("#customer-monthly-subtotal");
 const customerMonthlyTotalEl = document.querySelector("#customer-monthly-total");
 const customerMonthlyDifferenceEl = document.querySelector("#customer-monthly-difference");
+const customerInstallmentsSlider = document.querySelector("#customer-installments-slider");
+const customerInstallmentsValue = document.querySelector("#customer-installments-value");
 
 let products = [];
 
@@ -76,6 +78,7 @@ groupSelect?.addEventListener("change", updateWarrantyOptions);
 installmentsInput?.addEventListener("input", renderTotals);
 customerViewButton?.addEventListener("click", openCustomerView);
 closeCustomerViewButton?.addEventListener("click", closeCustomerView);
+customerInstallmentsSlider?.addEventListener("input", updateCustomerViewTotals);
 
 priceInput?.addEventListener("blur", () => {
   const price = parsePrice(priceInput.value);
@@ -226,15 +229,31 @@ function openCustomerView() {
     return;
   }
 
+  if (customerInstallmentsSlider) {
+    customerInstallmentsSlider.value = installmentsInput.value;
+  }
+
+  updateCustomerViewTotals();
+  customerView.hidden = false;
+}
+
+function updateCustomerViewTotals() {
   const totals = getTotals();
 
-  customerInstallmentsEl.textContent = `${totals.installments} rata`;
-  customerTotalEl.textContent = formatEuro(totals.total);
-  customerMonthlySubtotalEl.textContent = formatEuro(totals.monthlySubtotal);
-  customerMonthlyTotalEl.textContent = formatEuro(totals.monthlyTotal);
-  customerMonthlyDifferenceEl.textContent = formatEuro(totals.monthlyDifference);
+  const installments = Number(
+    customerInstallmentsSlider?.value || totals.installments
+  );
 
-  customerView.hidden = false;
+  customerInstallmentsEl.textContent = `${installments} rata`;
+
+  if (customerInstallmentsValue) {
+    customerInstallmentsValue.textContent = installments;
+  }
+
+  customerTotalEl.textContent = formatEuro(totals.total);
+  customerMonthlySubtotalEl.textContent = formatEuro(totals.subtotal / installments);
+  customerMonthlyTotalEl.textContent = formatEuro(totals.total / installments);
+  customerMonthlyDifferenceEl.textContent = formatEuro(totals.warrantyTotal / installments);
 }
 
 function closeCustomerView() {
