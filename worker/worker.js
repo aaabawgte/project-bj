@@ -605,6 +605,122 @@ export default {
       return json({ success: true });
     }
 
+    if (request.method === "GET" && url.pathname === "/offers") {
+      const user = await getAuthenticatedUser(request, env);
+
+      if (!user) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
+      const offers = await env.DB
+        .prepare(`
+          SELECT
+            offers.id,
+            offers.title,
+            offers.discount,
+            offers.conditions,
+            offers.duration,
+            offers.created_at,
+            offers.updated_at,
+            users.username
+          FROM offers
+          JOIN users ON users.id = offers.user_id
+          ORDER BY offers.updated_at DESC
+        `)
+        .all();
+
+      return json(offers.results || []);
+    }
+
+    if (request.method === "POST" && url.pathname === "/offers") {
+      const admin = await getAdminUser(request, env);
+
+      if (!admin) {
+        return json({ error: "Forbidden" }, 403);
+      }
+
+      const body = await request.json();
+      const title = (body.title || "").trim();
+      const discount = (body.discount || "").trim();
+      const conditions = (body.conditions || "").trim();
+      const duration = (body.duration || "").trim();
+      const now = new Date().toISOString();
+
+      if (!title || !discount) {
+        return json({ error: "Naziv ponude i popust su obavezni" }, 400);
+      }
+
+      const result = await env.DB
+        .prepare(`
+          INSERT INTO offers (
+            user_id,
+            title,
+            discount,
+            conditions,
+            duration,
+            created_at,
+            updated_at
+          )
+          VALUES (?, ?, ?, ?, ?, ?, ?)
+        `)
+        .bind(admin.id, title, discount, conditions, duration, now, now)
+        .run();
+
+      return json({ success: true, id: result.meta.last_row_id });
+    }
+
+    if (request.method === "PUT" && url.pathname.startsWith("/offers/")) {
+      const admin = await getAdminUser(request, env);
+
+      if (!admin) {
+        return json({ error: "Forbidden" }, 403);
+      }
+
+      const offerId = url.pathname.split("/")[2];
+      const body = await request.json();
+      const now = new Date().toISOString();
+
+      await env.DB
+        .prepare(`
+          UPDATE offers
+          SET
+            title = ?,
+            discount = ?,
+            conditions = ?,
+            duration = ?,
+            updated_at = ?
+          WHERE id = ?
+        `)
+        .bind(
+          (body.title || "").trim(),
+          (body.discount || "").trim(),
+          (body.conditions || "").trim(),
+          (body.duration || "").trim(),
+          now,
+          offerId
+        )
+        .run();
+
+      return json({ success: true });
+    }
+
+    if (request.method === "DELETE" && url.pathname.startsWith("/offers/")) {
+      const admin = await getAdminUser(request, env);
+
+      if (!admin) {
+        return json({ error: "Forbidden" }, 403);
+      }
+
+      const offerId = url.pathname.split("/")[2];
+
+      await env.DB
+        .prepare("DELETE FROM offers WHERE id = ?")
+        .bind(offerId)
+        .run();
+
+      return json({ success: true });
+    }
+
     if (request.method === "GET" && url.pathname === "/tools") {
       const setting = await env.DB
         .prepare("SELECT value FROM settings WHERE key = ?")

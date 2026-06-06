@@ -1,0 +1,71 @@
+
+
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trenutne ponude | PROJECT BJ</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <header class="page-header">
+            <div>
+                <h1>Trenutne ponude</h1>
+                <p class="text-muted">Aktivne akcije i posebne ponude.</p>
+            </div>
+
+            <div class="page-actions">
+                <button id="new-offer-btn" class="btn btn-primary" hidden>
+                    + Nova ponuda
+                </button>
+
+                <a href="dashboard.html" class="btn btn-secondary">
+                    Natrag
+                </a>
+            </div>
+        </header>
+
+        <section id="offer-form-card" class="card form-card" hidden>
+            <h2>Nova ponuda</h2>
+
+            <form id="offer-form">
+                <div class="field">
+                    <label for="offer-title">Naziv ponude</label>
+                    <input id="offer-title" type="text" required>
+                </div>
+
+                <div class="field">
+                    <label for="offer-discount">Iznos popusta</label>
+                    <input id="offer-discount" type="text" required>
+                </div>
+
+                <div class="field">
+                    <label for="offer-conditions">Uvjeti (opcionalno)</label>
+                    <textarea id="offer-conditions"></textarea>
+                </div>
+
+                <div class="field">
+                    <label for="offer-duration">Trajanje (opcionalno)</label>
+                    <input id="offer-duration" type="text">
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Spremi ponudu
+                </button>
+            </form>
+        </section>
+
+        <section id="offers-list" class="notes-grid">
+            <p class="text-muted">Učitavanje ponuda...</p>
+        </section>
+
+    </div>
+
+    <script src="../js/offers.js"></script>
+</body>
+</html>
