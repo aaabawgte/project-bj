@@ -6,6 +6,80 @@
     <title>Dashboard | PROJECT BJ</title>
 
     <link rel="stylesheet" href="../css/style.css">
+    <style>
+        @media (max-width: 700px) {
+            .dashboard-layout {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+
+            .dashboard-content,
+            .dashboard-main,
+            .dashboard-grid,
+            .dashboard-sidebar {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .dashboard-main {
+                margin-top: 24px;
+            }
+
+            .dashboard-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .tool-link {
+                width: 100%;
+                display: block;
+            }
+
+            .tool-card {
+                width: 100%;
+                height: auto;
+                min-height: 118px;
+                padding: 18px;
+            }
+
+            .dashboard-admin-row {
+                justify-content: stretch;
+            }
+
+            .dashboard-admin-row .btn,
+            #theme-toggle {
+                width: 100%;
+            }
+
+            .dashboard-sidebar {
+                position: static;
+                display: grid;
+                gap: 12px;
+            }
+
+            .dashboard-user-area {
+                width: 100%;
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .dashboard-user-card,
+            .dashboard-user-area .btn {
+                width: 100%;
+                height: 48px;
+                min-height: 48px;
+            }
+
+            .announcements-card {
+                width: 100%;
+                max-height: none;
+                min-height: 320px;
+            }
+        }
+    </style>
 </head>
 <body>
 
