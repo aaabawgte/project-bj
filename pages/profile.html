@@ -1,0 +1,109 @@
+
+
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moj profil | PROJECT BJ</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <header class="page-header">
+            <div>
+                <h1>Moj profil</h1>
+                <p class="text-muted">Statistika i informacije o računu.</p>
+            </div>
+
+            <div class="page-actions">
+                <button id="theme-toggle" type="button" class="btn btn-secondary" title="Tamni način">
+                    🌙
+                </button>
+
+                <a href="dashboard.html" class="btn btn-secondary">
+                    Natrag
+                </a>
+            </div>
+        </header>
+
+        <section class="profile-grid" id="profile-grid">
+
+            <div class="card">
+                <h2>Korisnik</h2>
+
+                <div class="profile-stat">
+                    <span>Username</span>
+                    <strong id="profile-username">Učitavanje...</strong>
+                </div>
+
+                <div class="profile-stat">
+                    <span>Role</span>
+                    <strong id="profile-role">-</strong>
+                </div>
+
+                <div class="profile-stat">
+                    <span>Status</span>
+                    <strong id="profile-status">-</strong>
+                </div>
+
+                <div class="profile-stat">
+                    <span>Registriran</span>
+                    <strong id="profile-days">-</strong>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Jamstva</h2>
+
+                <div class="profile-stat">
+                    <span>Prodano jamstava</span>
+                    <strong id="profile-count">0</strong>
+                </div>
+
+                <div class="profile-stat">
+                    <span>Ukupan iznos</span>
+                    <strong id="profile-revenue">0 €</strong>
+                </div>
+
+                <div class="profile-stat">
+                    <span>Prosječno jamstvo</span>
+                    <strong id="profile-average">0 €</strong>
+                </div>
+
+                <div class="profile-stat">
+                    <span>Najveće jamstvo</span>
+                    <strong id="profile-highest">0 €</strong>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Aktivnost</h2>
+
+                <div class="profile-stat">
+                    <span>Najprodavanije jamstvo</span>
+                    <strong id="profile-top-warranty">-</strong>
+                </div>
+
+                <div class="profile-stat">
+                    <span>Broj notesa</span>
+                    <strong id="profile-notes">0</strong>
+                </div>
+
+                <div class="profile-stat">
+                    <span>Zadnje jamstvo</span>
+                    <strong id="profile-last">-</strong>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/profile.js"></script>
+</body>
+</html>

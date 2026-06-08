@@ -531,6 +531,78 @@ export default {
       });
     }
 
+    if (request.method === "GET" && url.pathname === "/profile") {
+      const user = await getAuthenticatedUser(request, env);
+
+      if (!user) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
+      const userInfo = await env.DB
+        .prepare(`
+          SELECT id, username, role, status, created_at
+          FROM users
+          WHERE id = ?
+        `)
+        .bind(user.id)
+        .first();
+
+      const warrantySummary = await env.DB
+        .prepare(`
+          SELECT
+            COUNT(*) as warrantyCount,
+            COALESCE(SUM(warranty_price), 0) as warrantyRevenue,
+            COALESCE(AVG(warranty_price), 0) as averageWarrantyPrice,
+            COALESCE(MAX(warranty_price), 0) as highestWarrantyPrice
+          FROM sold_warranties
+          WHERE user_id = ?
+        `)
+        .bind(user.id)
+        .first();
+
+      const topWarranty = await env.DB
+        .prepare(`
+          SELECT warranty_type, COUNT(*) as count
+          FROM sold_warranties
+          WHERE user_id = ?
+          GROUP BY warranty_type
+          ORDER BY count DESC
+          LIMIT 1
+        `)
+        .bind(user.id)
+        .first();
+
+      const lastWarranty = await env.DB
+        .prepare(`
+          SELECT sale_date, product_name, warranty_type, warranty_price
+          FROM sold_warranties
+          WHERE user_id = ?
+          ORDER BY sale_date DESC, created_at DESC
+          LIMIT 1
+        `)
+        .bind(user.id)
+        .first();
+
+      const notesCount = await env.DB
+        .prepare("SELECT COUNT(*) as count FROM notes WHERE user_id = ?")
+        .bind(user.id)
+        .first();
+
+      return json({
+        username: userInfo?.username || user.username,
+        role: userInfo?.role || user.role,
+        status: userInfo?.status || user.status,
+        createdAt: userInfo?.created_at || null,
+        warrantyCount: Number(warrantySummary?.warrantyCount || 0),
+        warrantyRevenue: Number(warrantySummary?.warrantyRevenue || 0),
+        averageWarrantyPrice: Number(warrantySummary?.averageWarrantyPrice || 0),
+        highestWarrantyPrice: Number(warrantySummary?.highestWarrantyPrice || 0),
+        topWarranty: topWarranty?.warranty_type || "-",
+        notesCount: Number(notesCount?.count || 0),
+        lastWarranty: lastWarranty || null
+      });
+    }
+
     if (request.method === "GET" && url.pathname === "/announcements") {
       const user = await getAuthenticatedUser(request, env);
 

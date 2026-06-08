@@ -77,13 +77,16 @@
             </section>
 
             <aside class="dashboard-sidebar">
+                <button id="theme-toggle" class="btn btn-secondary" title="Tamni način">
+                    🌙
+                </button>
                 <div class="dashboard-user-area">
-                    <div class="dashboard-user-card">
+                    <a href="profile.html" class="dashboard-user-card dashboard-user-link">
                         <div class="dashboard-user-label">Prijavljen korisnik</div>
                         <div id="current-user" class="dashboard-user-name">
                             Učitavanje...
                         </div>
-                    </div>
+                    </a>
 
                     <button id="logout-btn" class="btn btn-secondary">
                         Odjava
@@ -117,6 +120,7 @@
 
     </div>
 
+    <script src="../js/theme.js"></script>
     <script src="../js/dashboard.js"></script>
 </body>
 </html>
