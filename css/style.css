@@ -1750,6 +1750,8 @@ label {
   padding: 22px;
   display: grid;
   gap: 12px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .filter-card input[type="week"] {
@@ -1860,6 +1862,7 @@ label {
   padding: 20px;
   display: grid;
   gap: 16px;
+  border-radius: 18px;
 }
 
 .shift-request-header {
@@ -1873,6 +1876,11 @@ label {
   margin-bottom: 3px;
   font-size: 18px;
   line-height: 1.25;
+}
+
+.shift-request-header p {
+  color: var(--muted);
+  font-size: 13px;
 }
 
 .shift-request-details {
@@ -1961,6 +1969,43 @@ label {
     max-width: 100%;
   }
 
+  .filter-card {
+    padding: 18px;
+  }
+
+  .week-filter-controls {
+    gap: 8px;
+  }
+
+  .week-filter-controls .btn {
+    min-width: 0;
+    flex: 0 0 auto;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+
+  .week-input-group label {
+    font-size: 12px;
+  }
+
+  .filter-card input[type="week"] {
+    padding: 0 10px;
+    font-size: 14px;
+  }
+
+  .shift-request-card {
+    padding: 16px;
+    gap: 14px;
+  }
+
+  .shift-request-header h2 {
+    font-size: 16px;
+  }
+
+  .shift-request-details p {
+    font-size: 13px;
+  }
+
   .week-filter-controls {
     flex-direction: row;
     align-items: flex-end;
@@ -1980,5 +2025,6 @@ label {
 
   .shift-request-card .page-actions .btn {
     width: 100%;
+    min-height: 44px;
   }
 }
