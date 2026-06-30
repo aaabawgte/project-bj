@@ -102,11 +102,14 @@
                             ⚙️ Admin
                         </a>
 
+                        <button id="customize-dashboard-btn" class="btn btn-secondary">
+                            🧩 Uredi dashboard
+                        </button>
                     </div>
 
                     <div class="dashboard-grid">
 
-                        <a href="calculator.html" class="tool-link">
+                        <a href="calculator.html" class="tool-link" data-tool="calculator">
                             <div class="card tool-card">
                                 <div class="tool-icon">🛡️</div>
                                 <h2>Jamstva</h2>
@@ -114,7 +117,7 @@
                             </div>
                         </a>
 
-                        <a href="notes.html" class="tool-link">
+                        <a href="notes.html" class="tool-link" data-tool="notes">
                             <div class="card tool-card">
                                 <div class="tool-icon">📝</div>
                                 <h2>Notes</h2>
@@ -122,7 +125,7 @@
                             </div>
                         </a>
 
-                        <a href="warranties.html" class="tool-link">
+                        <a href="warranties.html" class="tool-link" data-tool="warranties">
                             <div class="card tool-card">
                                 <div class="tool-icon">📋</div>
                                 <h2>Prodana jamstva</h2>
@@ -130,7 +133,7 @@
                             </div>
                         </a>
 
-                        <a href="warranty-stats.html" class="tool-link">
+                        <a href="warranty-stats.html" class="tool-link" data-tool="warranty-stats">
                             <div class="card tool-card">
                                 <div class="tool-icon">📊</div>
                                 <h2>Statistika jamstava</h2>
@@ -138,14 +141,14 @@
                             </div>
                         </a>
 
-                        <a href="action-search.html" class="tool-link">
+                        <a href="action-search.html" class="tool-link" data-tool="action-search">
                             <div class="card tool-card">
                                 <div class="tool-icon">🔍</div>
                                 <h2>Pretraga akcija</h2>
                                 <p class="text-muted">Pretraži aktualne akcije</p>
                             </div>
                         </a>
-                        <a href="shifts.html" class="tool-link">
+                        <a href="shifts.html" class="tool-link" data-tool="shifts">
                             <div class="card tool-card">
                                 <div class="tool-icon">📅</div>
                                 <h2>Smjene</h2>
@@ -202,7 +205,28 @@
 
     </div>
 
-    <script src="../js/theme.js"></script>
+<script src="../js/theme.js"></script>
     <script src="../js/dashboard.js"></script>
+
+    <div id="dashboard-customize-modal" class="modal" hidden>
+        <div class="modal-content">
+            <div class="flex-between">
+                <h2>🧩 Uredi dashboard</h2>
+                <button id="close-dashboard-customize" class="btn btn-secondary">✕</button>
+            </div>
+
+            <p class="text-muted">
+                U sljedećem koraku moći ćeš sakriti tileove i promijeniti njihov redoslijed.
+            </p>
+
+            <div id="dashboard-tools-editor"></div>
+
+            <div class="page-actions">
+                <button id="save-dashboard-layout" class="btn btn-primary">
+                    Spremi raspored
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

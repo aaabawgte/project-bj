@@ -1048,6 +1048,61 @@ export default {
       return json({ success: true });
     }
 
+    if (request.method === "GET" && url.pathname === "/dashboard-preferences") {
+      const user = await getAuthenticatedUser(request, env);
+
+      if (!user) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
+      const preferences = await env.DB
+        .prepare(`
+          SELECT layout_json
+          FROM dashboard_preferences
+          WHERE user_id = ?
+        `)
+        .bind(user.id)
+        .first();
+
+      return json({
+        layout: preferences ? JSON.parse(preferences.layout_json) : null
+      });
+    }
+
+    if (request.method === "PUT" && url.pathname === "/dashboard-preferences") {
+      const user = await getAuthenticatedUser(request, env);
+
+      if (!user) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
+      const body = await request.json();
+      const layout = body.layout;
+      const now = new Date().toISOString();
+
+      if (!Array.isArray(layout)) {
+        return json({ error: "Neispravan layout" }, 400);
+      }
+
+      await env.DB
+        .prepare(`
+          INSERT INTO dashboard_preferences (
+            user_id,
+            layout_json,
+            updated_at
+          )
+          VALUES (?, ?, ?)
+          ON CONFLICT(user_id)
+          DO UPDATE SET
+            layout_json = excluded.layout_json,
+            updated_at = excluded.updated_at
+        `)
+        .bind(user.id, JSON.stringify(layout), now)
+        .run();
+
+      return json({ success: true });
+    }
+
     if (request.method === "GET" && url.pathname === "/tools") {
       const setting = await env.DB
         .prepare("SELECT value FROM settings WHERE key = ?")
