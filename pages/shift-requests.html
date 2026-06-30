@@ -1,0 +1,71 @@
+
+
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zahtjevi za smjene | PROJECT BJ</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <header class="page-header">
+            <div>
+                <h1 id="page-title">🕓 Zahtjevi</h1>
+                <p class="text-muted">Pregled i obrada zahtjeva djelatnika.</p>
+            </div>
+
+            <div class="page-actions">
+                <button id="theme-toggle" type="button" class="btn btn-secondary">
+                    🌙
+                </button>
+
+                <a href="shifts.html" class="btn btn-secondary">
+                    Natrag
+                </a>
+            </div>
+        </header>
+
+        <section class="card filter-card week-filter-card">
+            <div class="week-filter-header">
+                <div>
+                    <h2>📅 Filter po tjednu</h2>
+                    <p class="text-muted">Prikaži zahtjeve za određeni rasporedni tjedan.</p>
+                </div>
+            </div>
+
+            <div class="week-filter-controls">
+                <button id="previous-week" type="button" class="btn btn-secondary">
+                    ← Prethodni
+                </button>
+
+                <div class="form-group week-input-group">
+                    <label for="week-filter">Odabrani tjedan</label>
+                    <input type="week" id="week-filter">
+                </div>
+
+                <button id="next-week" type="button" class="btn btn-secondary">
+                    Sljedeći →
+                </button>
+            </div>
+            <small id="week-range" class="week-range text-muted">
+                Odaberi tjedan za prikaz zahtjeva.
+            </small>
+        </section>
+
+        <section id="requests-container" class="requests-grid">
+            <div class="card">
+                <p class="text-muted">Učitavanje zahtjeva...</p>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/shift-requests.js"></script>
+</body>
+</html>

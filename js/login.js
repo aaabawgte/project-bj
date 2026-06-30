@@ -38,6 +38,13 @@ form?.addEventListener("submit", async (event) => {
 
     localStorage.setItem("token", data.token);
     localStorage.setItem("username", data.username);
+    localStorage.setItem("role", data.role || "user");
+
+    localStorage.setItem("user", JSON.stringify({
+      id: data.id,
+      username: data.username,
+      role: data.role || "user"
+    }));
 
     window.location.href = "pages/dashboard.html";
   } catch (error) {

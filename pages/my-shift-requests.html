@@ -1,0 +1,44 @@
+
+
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moji zahtjevi | PROJECT BJ</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <header class="page-header">
+            <div>
+                <h1>📋 Moji zahtjevi</h1>
+                <p class="text-muted">Pregled svih poslanih zahtjeva za raspored.</p>
+            </div>
+
+            <div class="page-actions">
+                <button id="theme-toggle" type="button" class="btn btn-secondary">
+                    🌙
+                </button>
+
+                <a href="shifts.html" class="btn btn-secondary">
+                    Natrag
+                </a>
+            </div>
+        </header>
+
+        <section id="requests-container" class="requests-grid">
+            <div class="card">
+                <p class="text-muted">Učitavanje zahtjeva...</p>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/my-shift-requests.js"></script>
+</body>
+</html>

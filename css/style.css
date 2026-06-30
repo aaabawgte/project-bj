@@ -1624,3 +1624,361 @@ label {
     grid-template-columns: 1fr;
   }
 }
+
+/* DEAL CALCULATOR */
+#deal-results {
+  margin-top: 20px;
+  padding: 24px;
+}
+
+#deal-results h2 {
+  margin-bottom: 16px;
+}
+
+#deal-results .profile-stat {
+  padding: 16px 0;
+}
+
+#deal-results .profile-stat strong {
+  font-size: 22px;
+}
+
+#deal-saving,
+#deal-warranty-saving {
+  color: #34c759;
+}
+
+#deal-regular-total {
+  color: var(--danger);
+}
+
+#deal-final-total {
+  color: var(--accent);
+}
+
+#deal-calculate {
+  margin-top: 20px;
+  width: 100%;
+}
+
+@media (min-width: 900px) {
+  #deal-results {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 24px;
+  }
+
+  #deal-results h2 {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ACTION SEARCH */
+.results-grid {
+  margin-top: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.action-card {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.action-card h2 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.action-card .text-muted {
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.action-card strong {
+  color: var(--accent);
+  font-size: 18px;
+}
+
+#search-input {
+  width: 100%;
+  height: 46px;
+  margin-top: 8px;
+  padding: 0 14px;
+  background: var(--input);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  outline: 0;
+}
+
+#search-input:focus {
+  background: var(--card);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, .12);
+}
+
+@media (max-width: 560px) {
+  .action-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .action-card .text-muted {
+    white-space: normal;
+  }
+}
+
+/* SHIFTS MODULE */
+.shifts-grid {
+  margin-top: 24px;
+}
+
+.requests-grid {
+  margin-top: 20px;
+  display: grid;
+  gap: 14px;
+  max-width: 980px;
+}
+
+.filter-card {
+  max-width: 520px;
+  padding: 22px;
+  display: grid;
+  gap: 12px;
+}
+
+.filter-card input[type="week"] {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  background: var(--input);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  outline: 0;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.filter-card input[type="week"]:focus {
+  background: var(--card);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, .12);
+}
+
+.filter-card label {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.filter-card::before {
+  content: "📅 Filtriraj zahtjeve po rasporednom tjednu";
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.week-filter-controls {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.week-input-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.week-input-group label {
+  margin-bottom: 6px;
+}
+
+.week-filter-controls .btn {
+  white-space: nowrap;
+  min-height: 46px;
+  align-self: flex-end;
+}
+
+#shift-request-form {
+  display: grid;
+  gap: 18px;
+  max-width: 720px;
+}
+
+#shift-request-form input,
+#shift-request-form select,
+#shift-request-form textarea {
+  width: 100%;
+  padding: 0 14px;
+  background: var(--input);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  outline: 0;
+  font: inherit;
+}
+
+#shift-request-form input,
+#shift-request-form select {
+  height: 46px;
+}
+
+#shift-request-form textarea {
+  min-height: 110px;
+  padding-top: 12px;
+  resize: vertical;
+}
+
+#shift-request-form input:focus,
+#shift-request-form select:focus,
+#shift-request-form textarea:focus {
+  background: var(--card);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, .12);
+}
+
+#weekday-preview {
+  display: block;
+  margin-top: 7px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.shift-request-card {
+  padding: 20px;
+  display: grid;
+  gap: 16px;
+}
+
+.shift-request-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.shift-request-header h2 {
+  margin-bottom: 3px;
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.shift-request-details {
+  display: grid;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+}
+
+.shift-request-details p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.shift-request-details strong {
+  color: var(--text);
+}
+
+.status-badge {
+  padding: 7px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.status-pending {
+  color: #8a5a00;
+  background: #fff4d6;
+  border: 1px solid #ffe0a3;
+}
+
+.status-approved {
+  color: #0b6b2b;
+  background: #e8f8ee;
+  border: 1px solid #bce8c9;
+}
+
+.status-rejected {
+  color: #9f1d16;
+  background: var(--danger-bg);
+  border: 1px solid #ffc9c6;
+}
+
+[data-theme="dark"] .status-pending {
+  color: #ffd37a;
+  background: #3a2b12;
+  border-color: #5a421a;
+}
+
+[data-theme="dark"] .status-approved {
+  color: #7ee39b;
+  background: #12301d;
+  border-color: #1f5a33;
+}
+
+[data-theme="dark"] .status-rejected {
+  color: #ff9d98;
+  background: #3a1d1d;
+  border-color: #61302d;
+}
+
+.btn-danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: 1px solid #ffc9c6;
+}
+
+.btn-danger:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+.shift-request-card .page-actions {
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+  justify-content: flex-end;
+}
+
+@media (max-width: 560px) {
+  .requests-grid {
+    max-width: 100%;
+  }
+
+  .filter-card {
+    max-width: 100%;
+  }
+
+  .week-filter-controls {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+
+  .shift-request-header {
+    flex-direction: column;
+  }
+
+  .status-badge {
+    width: fit-content;
+  }
+
+  .shift-request-card .page-actions {
+    align-items: stretch;
+  }
+
+  .shift-request-card .page-actions .btn {
+    width: 100%;
+  }
+}

@@ -3,6 +3,8 @@ const API_URL = "https://project-bj-api.aaabawgte.workers.dev";
 const token = localStorage.getItem("token");
 const logoutButton = document.querySelector("#logout-btn");
 const adminTile = document.querySelector("#admin-tile");
+const dealCalculatorTile = document.querySelector("#deal-calculator-tile");
+const dealToolCard = document.querySelector("#deal-tool-card");
 const currentUser = document.querySelector("#current-user");
 const announcementsList = document.querySelector("#announcements-list");
 const announcementForm = document.querySelector("#announcement-form");
@@ -88,9 +90,25 @@ async function checkSession() {
   const data = await response.json();
   isAdmin = data.role === "admin";
 
-  if (adminTile && !isAdmin) adminTile.style.display = "none";
-  if (announcementForm && isAdmin) announcementForm.hidden = false;
-  if (currentUser) currentUser.textContent = `👤 ${data.username}`;
+  if (adminTile && !isAdmin) {
+    adminTile.style.display = "none";
+  }
+
+  if (dealCalculatorTile) {
+    dealCalculatorTile.hidden = !isAdmin;
+  }
+
+  if (dealToolCard) {
+    dealToolCard.hidden = !isAdmin;
+  }
+
+  if (announcementForm && isAdmin) {
+    announcementForm.hidden = false;
+  }
+
+  if (currentUser) {
+    currentUser.textContent = `👤 ${data.username}`;
+  }
 }
 
 async function loadAnnouncements() {

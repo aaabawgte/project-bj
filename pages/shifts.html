@@ -1,0 +1,87 @@
+
+
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smjene | PROJECT BJ</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <header class="page-header">
+            <div>
+                <h1>📅 Smjene</h1>
+                <p class="text-muted">Zahtjevi djelatnika vezani uz raspored rada.</p>
+            </div>
+
+            <div class="page-actions">
+                <button id="theme-toggle" type="button" class="btn btn-secondary" title="Tamni način">
+                    🌙
+                </button>
+
+                <a href="dashboard.html" class="btn btn-secondary">
+                    Natrag
+                </a>
+            </div>
+        </header>
+
+        <section class="dashboard-grid shifts-grid">
+            <a href="shift-request.html" class="tool-link">
+                <div class="card tool-card">
+                    <div class="tool-icon">➕</div>
+                    <h2>Unos zahtjeva</h2>
+                    <p class="text-muted">Pošalji želju za smjenu</p>
+                </div>
+            </a>
+
+            <a href="my-shift-requests.html" class="tool-link">
+                <div class="card tool-card">
+                    <div class="tool-icon">📋</div>
+                    <h2>Moji zahtjevi</h2>
+                    <p class="text-muted">Pregled vlastitih zahtjeva</p>
+                </div>
+            </a>
+
+            <a href="shift-requests.html?status=pending" class="tool-link admin-shift-tile" hidden>
+                <div class="card tool-card">
+                    <div class="tool-icon">🕓</div>
+                    <h2>Novi zahtjevi</h2>
+                    <p class="text-muted">Zahtjevi na čekanju</p>
+                </div>
+            </a>
+
+            <a href="shift-requests.html?status=approved" class="tool-link admin-shift-tile" hidden>
+                <div class="card tool-card">
+                    <div class="tool-icon">✅</div>
+                    <h2>Odobreni</h2>
+                    <p class="text-muted">Odobreni zahtjevi</p>
+                </div>
+            </a>
+
+            <a href="shift-requests.html?status=rejected" class="tool-link admin-shift-tile" hidden>
+                <div class="card tool-card">
+                    <div class="tool-icon">❌</div>
+                    <h2>Odbijeni</h2>
+                    <p class="text-muted">Odbijeni zahtjevi</p>
+                </div>
+            </a>
+
+            <a href="shift-requests.html?status=all" class="tool-link admin-shift-tile" hidden>
+                <div class="card tool-card">
+                    <div class="tool-icon">📦</div>
+                    <h2>Svi zahtjevi</h2>
+                    <p class="text-muted">Pregled svih zahtjeva</p>
+                </div>
+            </a>
+        </section>
+
+    </div>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/shifts.js"></script>
+</body>
+</html>

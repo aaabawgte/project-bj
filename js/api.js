@@ -1,0 +1,1 @@
+const API_URL = "https://project-bj-api.aaabawgte.workers.dev";
