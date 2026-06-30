@@ -677,6 +677,261 @@ export default {
       return json({ success: true });
     }
 
+    if (request.method === "POST" && url.pathname === "/shift-requests") {
+      const user = await getAuthenticatedUser(request, env);
+
+      if (!user) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
+      const body = await request.json();
+      const requestDate = (body.request_date || "").trim();
+      const weekday = (body.weekday || "").trim();
+      const shiftType = (body.shift_type || "").trim();
+      const reason = (body.reason || "").trim();
+      const now = new Date().toISOString();
+
+      const allowedShifts = ["jutro", "popodne", "slobodno"];
+
+      if (!requestDate || !weekday || !allowedShifts.includes(shiftType)) {
+        return json({ error: "Datum i smjena su obavezni" }, 400);
+      }
+
+      const firstAllowedDate = getNextScheduleWeekStartISO();
+
+      if (requestDate < firstAllowedDate) {
+        return json({ error: "Zahtjev je moguće poslati tek za sljedeći rasporedni tjedan" }, 400);
+      }
+
+      const existingRequest = await env.DB
+        .prepare(`
+          SELECT id
+          FROM shift_requests
+          WHERE user_id = ?
+          AND request_date = ?
+        `)
+        .bind(user.id, requestDate)
+        .first();
+
+      if (existingRequest) {
+        return json({ error: "Već postoji zahtjev za odabrani datum." }, 409);
+      }
+
+      const result = await env.DB
+        .prepare(`
+          INSERT INTO shift_requests (
+            user_id,
+            request_date,
+            weekday,
+            shift_type,
+            reason,
+            status,
+            created_at
+          )
+          VALUES (?, ?, ?, ?, ?, 'pending', ?)
+        `)
+        .bind(user.id, requestDate, weekday, shiftType, reason, now)
+        .run();
+
+      return json({
+        success: true,
+        id: result.meta.last_row_id
+      });
+    }
+
+    if (request.method === "GET" && url.pathname === "/my-shift-requests") {
+      const user = await getAuthenticatedUser(request, env);
+
+      if (!user) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
+      const requests = await env.DB
+        .prepare(`
+          SELECT
+            id,
+            request_date,
+            weekday,
+            shift_type,
+            reason,
+            admin_note,
+            status,
+            created_at
+          FROM shift_requests
+          WHERE user_id = ?
+          ORDER BY request_date DESC
+        `)
+        .bind(user.id)
+        .all();
+
+      return json({
+        requests: requests.results || []
+      });
+    }
+
+    if (request.method === "DELETE" && url.pathname.startsWith("/shift-requests/")) {
+      const user = await getAuthenticatedUser(request, env);
+
+      if (!user) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
+      const requestId = url.pathname.split("/")[2];
+
+      const existingRequest = await env.DB
+        .prepare(`
+          SELECT id, status, user_id
+          FROM shift_requests
+          WHERE id = ?
+        `)
+        .bind(requestId)
+        .first();
+
+      if (!existingRequest) {
+        return json({ error: "Zahtjev ne postoji" }, 404);
+      }
+
+      if (String(existingRequest.user_id) !== String(user.id)) {
+        return json({ error: "Ne možeš povući tuđi zahtjev" }, 403);
+      }
+
+      if (existingRequest.status !== "pending") {
+        return json({ error: "Možeš povući samo zahtjev koji je na čekanju" }, 400);
+      }
+
+      await env.DB
+        .prepare(`
+          DELETE FROM shift_requests
+          WHERE id = ?
+          AND user_id = ?
+          AND status = 'pending'
+        `)
+        .bind(requestId, user.id)
+        .run();
+
+      return json({ success: true });
+    }
+
+    if (request.method === "PATCH" && url.pathname.startsWith("/shift-requests/") && url.pathname.endsWith("/status")) {
+      const admin = await getAdminUser(request, env);
+
+      if (!admin) {
+        return json({ error: "Forbidden" }, 403);
+      }
+
+      const parts = url.pathname.split("/");
+      const requestId = parts[2];
+      const body = await request.json();
+      const status = (body.status || "").trim();
+      const adminNote = (body.admin_note || "").trim();
+      const now = new Date().toISOString();
+
+      if (!["approved", "rejected"].includes(status)) {
+        return json({ error: "Neispravan status zahtjeva" }, 400);
+      }
+
+      const existingRequest = await env.DB
+        .prepare(`
+          SELECT id, status
+          FROM shift_requests
+          WHERE id = ?
+        `)
+        .bind(requestId)
+        .first();
+
+      if (!existingRequest) {
+        return json({ error: "Zahtjev ne postoji" }, 404);
+      }
+
+      if (existingRequest.status !== "pending") {
+        return json({ error: "Samo zahtjevi na čekanju mogu se obraditi" }, 400);
+      }
+
+      await env.DB
+        .prepare(`
+          UPDATE shift_requests
+          SET status = ?,
+              admin_note = ?,
+              processed_at = ?,
+              processed_by = ?
+          WHERE id = ?
+        `)
+        .bind(status, adminNote, now, admin.id, requestId)
+        .run();
+
+      return json({ success: true });
+    }
+
+    if (request.method === "GET" && url.pathname === "/shift-requests") {
+      const admin = await getAdminUser(request, env);
+
+      if (!admin) {
+        return json({ error: "Forbidden" }, 403);
+      }
+
+      const status = url.searchParams.get("status") || "pending";
+      const selectedWeek = url.searchParams.get("week");
+
+      let query = `
+        SELECT
+          shift_requests.id,
+          shift_requests.request_date,
+          shift_requests.weekday,
+          shift_requests.shift_type,
+          shift_requests.reason,
+          shift_requests.admin_note,
+          shift_requests.status,
+          shift_requests.created_at,
+          users.username
+        FROM shift_requests
+        JOIN users ON users.id = shift_requests.user_id
+      `;
+
+      const conditions = [];
+      const bindings = [];
+
+      if (status !== "all") {
+        conditions.push(`shift_requests.status = ?`);
+        bindings.push(status);
+      }
+
+      if (selectedWeek) {
+        const [yearText, weekText] = selectedWeek.split("-W");
+        const year = Number(yearText);
+        const week = Number(weekText);
+
+        const firstDay = new Date(Date.UTC(year, 0, 1 + (week - 1) * 7));
+        const day = firstDay.getUTCDay() || 7;
+
+        if (day <= 4) {
+          firstDay.setUTCDate(firstDay.getUTCDate() - day + 1);
+        } else {
+          firstDay.setUTCDate(firstDay.getUTCDate() + 8 - day);
+        }
+
+        const lastDay = new Date(firstDay);
+        lastDay.setUTCDate(firstDay.getUTCDate() + 6);
+
+        const startDate = firstDay.toISOString().split("T")[0];
+        const endDate = lastDay.toISOString().split("T")[0];
+
+        conditions.push(`shift_requests.request_date BETWEEN ? AND ?`);
+        bindings.push(startDate, endDate);
+      }
+
+      if (conditions.length) {
+        query += ` WHERE ${conditions.join(" AND ")}`;
+      }
+
+      query += ` ORDER BY shift_requests.request_date ASC`;
+
+      const requests = await env.DB.prepare(query).bind(...bindings).all();
+
+      return json({
+        requests: requests.results || []
+      });
+    }
+
     if (request.method === "GET" && url.pathname === "/offers") {
       const user = await getAuthenticatedUser(request, env);
 
@@ -821,6 +1076,23 @@ export default {
   }
 };
 
+function getNextScheduleWeekStartISO() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const day = today.getDay();
+  const daysUntilNextMonday = day === 0 ? 1 : 8 - day;
+
+  const nextMonday = new Date(today);
+  nextMonday.setDate(today.getDate() + daysUntilNextMonday);
+
+  const year = nextMonday.getFullYear();
+  const month = String(nextMonday.getMonth() + 1).padStart(2, "0");
+  const date = String(nextMonday.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${date}`;
+}
+
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
@@ -835,7 +1107,7 @@ function corsHeaders() {
   return {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
-    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS"
+    "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS"
   };
 }
 
@@ -876,7 +1148,11 @@ async function getAuthenticatedUser(request, env) {
 async function getAdminUser(request, env) {
   const user = await getAuthenticatedUser(request, env);
 
-  if (!user || user.role !== "admin" || user.status !== "active") {
+  if (
+    !user ||
+    !["admin", "superadmin"].includes(user.role) ||
+    user.status !== "active"
+  ) {
     return null;
   }
 
