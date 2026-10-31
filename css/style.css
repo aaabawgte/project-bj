@@ -885,6 +885,39 @@ label {
   font-size: 22px;
 }
 
+.customer-copy-section {
+  display: grid;
+  gap: 12px;
+  margin-top: 4px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-light);
+}
+
+.customer-copy-section[hidden] {
+  display: none;
+}
+
+.customer-copy-section h3 {
+  margin-bottom: 3px;
+}
+
+.customer-copy-section p {
+  font-size: 13px;
+}
+
+.customer-copy-text {
+  height: auto;
+  min-height: 154px;
+  padding: 12px 14px;
+  resize: vertical;
+  font: inherit;
+  line-height: 1.55;
+}
+
+#copy-customer-text {
+  width: 100%;
+}
+
 .installments-labels {
   color: var(--muted);
   font-size: 12px;

@@ -140,6 +140,25 @@
                     <button type="button" id="customer-view-btn" class="btn btn-primary">
                         Prikaz za kupca
                     </button>
+
+                    <div id="customer-copy-section" class="customer-copy-section" hidden>
+                        <div>
+                            <h3>Tekst za kupca</h3>
+                            <p class="text-muted">Spremno za kopiranje u mail ili poruku</p>
+                        </div>
+
+                        <textarea
+                            id="customer-copy-text"
+                            class="input customer-copy-text"
+                            rows="7"
+                            readonly
+                            aria-label="Tekst izračuna za kupca"
+                        ></textarea>
+
+                        <button type="button" id="copy-customer-text" class="btn btn-secondary">
+                            Kopiraj tekst
+                        </button>
+                    </div>
                 </div>
 
             </section>

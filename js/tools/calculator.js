@@ -51,6 +51,9 @@ const installmentsValueEl = document.querySelector("#installments-value");
 const monthlySubtotalEl = document.querySelector("#monthly-subtotal");
 const monthlyWarrantyEl = document.querySelector("#monthly-warranty");
 const monthlyTotalEl = document.querySelector("#monthly-total");
+const customerCopySection = document.querySelector("#customer-copy-section");
+const customerCopyText = document.querySelector("#customer-copy-text");
+const copyCustomerTextButton = document.querySelector("#copy-customer-text");
 
 const customerViewButton = document.querySelector("#customer-view-btn");
 const customerView = document.querySelector("#customer-view");
@@ -79,6 +82,7 @@ installmentsInput?.addEventListener("input", renderTotals);
 customerViewButton?.addEventListener("click", openCustomerView);
 closeCustomerViewButton?.addEventListener("click", closeCustomerView);
 customerInstallmentsSlider?.addEventListener("input", updateCustomerViewTotals);
+copyCustomerTextButton?.addEventListener("click", copyCustomerText);
 
 priceInput?.addEventListener("blur", () => {
   const price = parsePrice(priceInput.value);
@@ -221,6 +225,54 @@ function renderTotals() {
   monthlySubtotalEl.textContent = formatEuro(totals.monthlySubtotal);
   monthlyWarrantyEl.textContent = formatEuro(totals.monthlyDifference);
   monthlyTotalEl.textContent = formatEuro(totals.monthlyTotal);
+
+  renderCustomerCopyText(totals);
+}
+
+function renderCustomerCopyText(totals) {
+  if (!customerCopySection || !customerCopyText) return;
+
+  customerCopySection.hidden = !products.length;
+
+  if (!products.length) {
+    customerCopyText.value = "";
+    return;
+  }
+
+  customerCopyText.value = [
+    `Plaćanje na ${formatInstallments(totals.installments)}:`,
+    `Ukupna cijena: ${formatEuro(totals.total)}`,
+    `Rata bez jamstva: ${formatEuro(totals.monthlySubtotal)}`,
+    `Rata s jamstvom: ${formatEuro(totals.monthlyTotal)}`,
+    `Razlika u rati: ${formatEuro(totals.monthlyDifference)}`
+  ].join("\n");
+}
+
+async function copyCustomerText() {
+  const text = customerCopyText?.value;
+
+  if (!text) return;
+
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      customerCopyText.focus();
+      customerCopyText.select();
+      document.execCommand("copy");
+    }
+
+    copyCustomerTextButton.textContent = "Kopirano!";
+
+    window.setTimeout(() => {
+      copyCustomerTextButton.textContent = "Kopiraj tekst";
+    }, 1600);
+  } catch (error) {
+    console.error(error);
+    customerCopyText.focus();
+    customerCopyText.select();
+    alert("Kopiranje nije uspjelo. Tekst je označen pa ga možeš kopirati ručno.");
+  }
 }
 
 function openCustomerView() {
@@ -244,7 +296,7 @@ function updateCustomerViewTotals() {
     customerInstallmentsSlider?.value || totals.installments
   );
 
-  customerInstallmentsEl.textContent = `${installments} rata`;
+  customerInstallmentsEl.textContent = formatInstallments(installments);
 
   if (customerInstallmentsValue) {
     customerInstallmentsValue.textContent = installments;
@@ -295,6 +347,19 @@ function formatNumber(value) {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   }).format(value);
+}
+
+function formatInstallments(value) {
+  const installments = Number(value);
+  const lastTwoDigits = installments % 100;
+  const lastDigit = installments % 10;
+  const noun = lastTwoDigits >= 12 && lastTwoDigits <= 14
+    ? "rata"
+    : lastDigit >= 2 && lastDigit <= 4
+      ? "rate"
+      : "rata";
+
+  return `${installments} ${noun}`;
 }
 
 function formatEuro(value) {
