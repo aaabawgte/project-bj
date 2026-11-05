@@ -850,6 +850,18 @@ label {
   line-height: 1.4;
 }
 
+.discount-input-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 82px;
+  gap: 8px;
+}
+
+.discount-type-select {
+  font-size: 17px;
+  font-weight: 800;
+  text-align: center;
+}
+
 .product-price-current {
   font-weight: 700;
   white-space: nowrap;

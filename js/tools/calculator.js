@@ -40,6 +40,7 @@ const token = localStorage.getItem("token");
 const form = document.querySelector("#product-form");
 const priceInput = document.querySelector("#price");
 const discountInput = document.querySelector("#discount");
+const discountTypeSelect = document.querySelector("#discount-type");
 const groupSelect = document.querySelector("#group");
 const warrantySelect = document.querySelector("#warranty");
 const warrantyWrapper = document.querySelector("#warranty-wrapper");
@@ -79,6 +80,7 @@ if (!token) {
 
 form?.addEventListener("submit", addProduct);
 groupSelect?.addEventListener("change", updateWarrantyOptions);
+discountTypeSelect?.addEventListener("change", updateDiscountInputMode);
 installmentsInput?.addEventListener("input", renderTotals);
 customerViewButton?.addEventListener("click", openCustomerView);
 closeCustomerViewButton?.addEventListener("click", closeCustomerView);
@@ -99,9 +101,13 @@ discountInput?.addEventListener("blur", () => {
   const discount = parsePrice(discountInput.value);
 
   if (Number.isFinite(discount) && discount >= 0) {
-    discountInput.value = formatNumber(discount);
+    discountInput.value = discountTypeSelect.value === "percent"
+      ? formatPercent(discount)
+      : formatNumber(discount);
   }
 });
+
+updateDiscountInputMode();
 
 productsTable?.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-id]");
@@ -150,13 +156,22 @@ function updateWarrantyOptions() {
   });
 }
 
+function updateDiscountInputMode() {
+  if (!discountInput || !discountTypeSelect) return;
+
+  discountInput.placeholder = discountTypeSelect.value === "percent"
+    ? "npr. 10"
+    : "npr. 30,00";
+}
+
 function addProduct(event) {
   event.preventDefault();
 
   const originalPrice = parsePrice(priceInput.value);
-  const discount = discountInput.value.trim()
+  const discountValue = discountInput.value.trim()
     ? parsePrice(discountInput.value)
     : 0;
+  const discountType = discountTypeSelect.value;
   const group = groupSelect.value;
   const warrantyIndex = warrantySelect.value;
 
@@ -165,12 +180,17 @@ function addProduct(event) {
     return;
   }
 
-  if (!Number.isFinite(discount) || discount < 0) {
+  if (!Number.isFinite(discountValue) || discountValue < 0) {
     alert("Unesi ispravan iznos popusta.");
     return;
   }
 
-  if (discount >= originalPrice) {
+  if (discountType === "percent" && discountValue >= 100) {
+    alert("Postotak popusta mora biti manji od 100%.");
+    return;
+  }
+
+  if (discountType === "amount" && discountValue >= originalPrice) {
     alert("Popust mora biti manji od cijene proizvoda.");
     return;
   }
@@ -186,6 +206,9 @@ function addProduct(event) {
   }
 
   const warranty = getWarranty(group, warrantyIndex);
+  const discount = discountType === "percent"
+    ? originalPrice * (discountValue / 100)
+    : discountValue;
   const price = originalPrice - discount;
   const warrantyAmount = originalPrice * (warranty.percent / 100);
 
@@ -194,12 +217,15 @@ function addProduct(event) {
     price,
     originalPrice,
     discount,
+    discountType,
+    discountValue,
     group,
     warrantyName: warranty.name,
     warrantyAmount
   });
 
   form.reset();
+  updateDiscountInputMode();
   updateWarrantyOptions();
   renderProducts();
   priceInput.focus();
@@ -230,7 +256,9 @@ function renderProducts() {
       ? `
         <div class="product-price-current">${formatEuro(product.price)}</div>
         <div class="product-price-meta">Redovna: ${formatEuro(product.originalPrice)}</div>
-        <div class="product-price-meta">Popust: −${formatEuro(product.discount)}</div>
+        <div class="product-price-meta">
+          Popust: −${formatEuro(product.discount)}${product.discountType === "percent" ? ` (${formatPercent(product.discountValue)}%)` : ""}
+        </div>
       `
       : `<div class="product-price-current">${formatEuro(product.price)}</div>`;
     const warrantyBase = product.discount > 0 && product.warrantyAmount > 0
@@ -385,6 +413,13 @@ function parsePrice(value) {
 function formatNumber(value) {
   return new Intl.NumberFormat("hr-HR", {
     minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(value);
+}
+
+function formatPercent(value) {
+  return new Intl.NumberFormat("hr-HR", {
+    minimumFractionDigits: 0,
     maximumFractionDigits: 2
   }).format(value);
 }

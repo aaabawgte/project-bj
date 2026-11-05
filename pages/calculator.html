@@ -37,8 +37,14 @@
                         </div>
 
                         <div>
-                            <label for="discount">Popust na proizvod (€)</label>
-                            <input id="discount" type="text" inputmode="decimal" class="input" placeholder="npr. 30,00">
+                            <label for="discount">Popust na proizvod</label>
+                            <div class="discount-input-row">
+                                <input id="discount" type="text" inputmode="decimal" class="input" placeholder="npr. 10">
+                                <select id="discount-type" class="select discount-type-select" aria-label="Vrsta popusta">
+                                    <option value="percent" selected>%</option>
+                                    <option value="amount">€</option>
+                                </select>
+                            </div>
                             <small class="form-hint text-muted">Jamstvo se računa na punu cijenu prije popusta.</small>
                         </div>
 
