@@ -938,7 +938,7 @@ label {
 
 .customer-copy-text {
   height: auto;
-  min-height: 154px;
+  min-height: 480px;
   padding: 12px 14px;
   resize: vertical;
   font: inherit;

@@ -307,13 +307,23 @@ function renderCustomerCopyText(totals) {
     return;
   }
 
-  customerCopyText.value = [
-    `Plaćanje na ${formatInstallments(totals.installments)}:`,
-    `Ukupna cijena: ${formatEuro(totals.total)}`,
-    `Rata bez jamstva: ${formatEuro(totals.monthlySubtotal)}`,
-    `Rata s jamstvom: ${formatEuro(totals.monthlyTotal)}`,
-    `Razlika u rati: ${formatEuro(totals.monthlyDifference)}`
-  ].join("\n");
+  const copyLines = [
+    `Ukupno bez jamstva: ${formatEuro(totals.subtotal)}`,
+    `Ukupno jamstava: ${formatEuro(totals.warrantyTotal)}`,
+    `Ukupna cijena: ${formatEuro(totals.total)}`
+  ];
+
+  [6, 12, 24, 36].forEach(installments => {
+    copyLines.push(
+      "",
+      `Plaćanje na ${formatInstallments(installments)}:`,
+      `Rata bez jamstva: ${formatEuro(totals.subtotal / installments)}`,
+      `Rata s jamstvom: ${formatEuro(totals.total / installments)}`,
+      `Razlika u rati: ${formatEuro(totals.warrantyTotal / installments)}`
+    );
+  });
+
+  customerCopyText.value = copyLines.join("\n");
 }
 
 async function copyCustomerText() {
