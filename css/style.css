@@ -843,6 +843,25 @@ label {
   max-width: 760px;
 }
 
+.form-hint {
+  display: block;
+  margin-top: 7px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.product-price-current {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.product-price-meta {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
 .section-header {
   margin-bottom: 16px;
 }

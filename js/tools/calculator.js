@@ -39,6 +39,7 @@ const groupNames = {
 const token = localStorage.getItem("token");
 const form = document.querySelector("#product-form");
 const priceInput = document.querySelector("#price");
+const discountInput = document.querySelector("#discount");
 const groupSelect = document.querySelector("#group");
 const warrantySelect = document.querySelector("#warranty");
 const warrantyWrapper = document.querySelector("#warranty-wrapper");
@@ -87,8 +88,18 @@ copyCustomerTextButton?.addEventListener("click", copyCustomerText);
 priceInput?.addEventListener("blur", () => {
   const price = parsePrice(priceInput.value);
 
-  if (price > 0) {
+  if (Number.isFinite(price) && price > 0) {
     priceInput.value = formatNumber(price);
+  }
+});
+
+discountInput?.addEventListener("blur", () => {
+  if (!discountInput.value.trim()) return;
+
+  const discount = parsePrice(discountInput.value);
+
+  if (Number.isFinite(discount) && discount >= 0) {
+    discountInput.value = formatNumber(discount);
   }
 });
 
@@ -142,12 +153,25 @@ function updateWarrantyOptions() {
 function addProduct(event) {
   event.preventDefault();
 
-  const price = parsePrice(priceInput.value);
+  const originalPrice = parsePrice(priceInput.value);
+  const discount = discountInput.value.trim()
+    ? parsePrice(discountInput.value)
+    : 0;
   const group = groupSelect.value;
   const warrantyIndex = warrantySelect.value;
 
-  if (!price || price <= 0) {
+  if (!Number.isFinite(originalPrice) || originalPrice <= 0) {
     alert("Unesi ispravnu cijenu proizvoda.");
+    return;
+  }
+
+  if (!Number.isFinite(discount) || discount < 0) {
+    alert("Unesi ispravan iznos popusta.");
+    return;
+  }
+
+  if (discount >= originalPrice) {
+    alert("Popust mora biti manji od cijene proizvoda.");
     return;
   }
 
@@ -162,11 +186,14 @@ function addProduct(event) {
   }
 
   const warranty = getWarranty(group, warrantyIndex);
-  const warrantyAmount = price * (warranty.percent / 100);
+  const price = originalPrice - discount;
+  const warrantyAmount = originalPrice * (warranty.percent / 100);
 
   products.push({
     id: crypto.randomUUID(),
     price,
+    originalPrice,
+    discount,
     group,
     warrantyName: warranty.name,
     warrantyAmount
@@ -199,12 +226,25 @@ function renderProducts() {
 
   products.forEach(product => {
     const row = document.createElement("tr");
+    const priceDetails = product.discount > 0
+      ? `
+        <div class="product-price-current">${formatEuro(product.price)}</div>
+        <div class="product-price-meta">Redovna: ${formatEuro(product.originalPrice)}</div>
+        <div class="product-price-meta">Popust: −${formatEuro(product.discount)}</div>
+      `
+      : `<div class="product-price-current">${formatEuro(product.price)}</div>`;
+    const warrantyBase = product.discount > 0 && product.warrantyAmount > 0
+      ? `<div class="product-price-meta">Osnovica: ${formatEuro(product.originalPrice)}</div>`
+      : "";
 
     row.innerHTML = `
-      <td>${formatEuro(product.price)}</td>
+      <td>${priceDetails}</td>
       <td>${groupNames[product.group]}</td>
       <td>${product.warrantyName}</td>
-      <td>${formatEuro(product.warrantyAmount)}</td>
+      <td>
+        <div class="product-price-current">${formatEuro(product.warrantyAmount)}</div>
+        ${warrantyBase}
+      </td>
       <td><button class="btn btn-secondary" data-id="${product.id}">Ukloni</button></td>
     `;
 
