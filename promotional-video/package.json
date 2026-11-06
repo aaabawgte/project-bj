@@ -1,0 +1,28 @@
+{
+  "name": "project-bj-promotional-video",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Apple-style promotional film for Project BJ, built with Remotion from authentic captures of the real app.",
+  "type": "module",
+  "scripts": {
+    "capture": "node capture/capture.mjs",
+    "audio": "python3 scripts/make_audio.py",
+    "studio": "remotion studio src/index.ts",
+    "render:vertical": "remotion render src/index.ts ProjectBJVertical out/project-bj-vertical-1080x1920.mp4 --codec=h264 --crf=16 --pixel-format=yuv420p --audio-codec=aac --audio-bitrate=256k",
+    "render:landscape": "remotion render src/index.ts ProjectBJLandscape out/project-bj-landscape-1920x1080.mp4 --codec=h264 --crf=16 --pixel-format=yuv420p --audio-codec=aac --audio-bitrate=256k",
+    "render": "npm run render:vertical && npm run render:landscape",
+    "stills": "node scripts/stills.mjs"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.300",
+    "@remotion/cli": "4.0.300",
+    "@remotion/renderer": "4.0.300",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.300"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "typescript": "5.6.3"
+  }
+}
